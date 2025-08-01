@@ -51,7 +51,7 @@ GitHub Actionsのワークフロー実行で発生するエラーログは、大
 pip install github-actions-ai-analyzer
 
 # 特定のバージョンをインストール
-pip install github-actions-ai-analyzer==0.1.0
+pip install github-actions-ai-analyzer==0.1.1
 ```
 
 ## 📚 使用方法
@@ -246,7 +246,7 @@ python examples/basic_usage.py
 ## 📊 プロジェクト状況
 
 ### 現在のバージョン
-- **Version**: 0.1.0
+- **Version**: 0.1.1
 - **Release Date**: 2024-08-02
 - **Python Support**: 3.8+
 

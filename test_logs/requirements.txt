@@ -1,0 +1,4 @@
+requests==2.28.0
+flask==2.2.0
+pytest==7.0.0
+django==4.2.0 

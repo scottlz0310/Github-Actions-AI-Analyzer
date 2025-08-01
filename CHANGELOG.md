@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2024-08-02
+
+### Fixed
+- Fixed LogLevel and PatternCategory enum handling in CLI and analyzer
+- Fixed log processor to properly handle GitHub Actions timestamp format
+- Fixed pattern matcher language filtering to work with logs without language metadata
+- Improved error pattern matching for dependency and network errors
+
+### Improved
+- Enhanced log message cleaning to remove timestamps before pattern matching
+- Added more comprehensive error patterns for dependency issues
+- Better test coverage and manual testing validation
+
+### Technical
+- Fixed AttributeError: 'str' object has no attribute 'value' issues
+- Improved pattern matching accuracy for real GitHub Actions logs
+- Enhanced CLI error handling and user experience
+
 ## [0.1.0] - 2024-08-02
 
 ### Added

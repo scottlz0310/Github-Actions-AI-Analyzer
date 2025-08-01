@@ -20,11 +20,9 @@ class LogProcessor:
             r"^::notice::",  # 通知メッセージ
             r"^::warning::",  # 警告メッセージ
             r"^::error::",  # エラーメッセージ
-            r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z",  # タイムスタンプ
             r"^##\[group\]",  # グループ開始
             r"^##\[endgroup\]",  # グループ終了
             r"^##\[command\]",  # コマンド実行
-            r"^##\[endgroup\]",  # コマンド終了
         ]
         self.noise_regex = re.compile("|".join(self.noise_patterns))
 
@@ -141,8 +139,11 @@ class LogProcessor:
 
     def _clean_message(self, line: str) -> str:
         """メッセージをクリーンアップ"""
+        # タイムスタンプを除去
+        timestamp_pattern = r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\s*"
+        cleaned = re.sub(timestamp_pattern, "", line)
         # GitHub Actionsの特殊記号を除去
-        cleaned = re.sub(r"^::[^:]*::", "", line)
+        cleaned = re.sub(r"^::[^:]*::", "", cleaned)
         # 先頭の空白を除去
         cleaned = cleaned.strip()
         return cleaned

@@ -4,7 +4,7 @@ GitHub Actions AI Analyzer
 GitHub Actionsのエラーログを解析し、AIによる改善案生成を支援するライブラリ
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Scott LZ"
 __email__ = "scottlz0310@gmail.com"
 

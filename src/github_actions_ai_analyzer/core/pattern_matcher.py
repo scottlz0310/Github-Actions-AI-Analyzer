@@ -35,7 +35,7 @@ class PatternMatcher:
                     id="dep_version_conflict",
                     name="Version Conflict",
                     category=PatternCategory.DEPENDENCY,
-                    regex_pattern=r"ERROR: Cannot uninstall '([^']+)'.*version conflict",
+                    regex_pattern=r"ERROR: Cannot uninstall '([^']+)'",
                     description="パッケージのバージョン競合",
                     severity="error",
                     language="python",
@@ -48,6 +48,15 @@ class PatternMatcher:
                     description="npm installの失敗",
                     severity="error",
                     language="javascript",
+                ),
+                ErrorPattern(
+                    id="dep_package_not_found",
+                    name="Package Not Found",
+                    category=PatternCategory.DEPENDENCY,
+                    regex_pattern=r"ERROR: Could not find a version that satisfies the requirement",
+                    description="パッケージが見つからない",
+                    severity="error",
+                    language="python",
                 ),
             ]
         )
@@ -158,9 +167,10 @@ class PatternMatcher:
         matches = []
 
         for pattern in self.patterns:
-            # 言語フィルタリング
+            # 言語フィルタリング（メタデータに言語が設定されている場合のみ）
             if (
                 pattern.language
+                and "language" in entry.metadata
                 and entry.metadata.get("language") != pattern.language
             ):
                 continue

@@ -17,7 +17,7 @@ console = Console()
 
 
 @click.group()
-@click.version_option(version="0.1.0")
+@click.version_option(version="0.1.1")
 def main():
     """GitHub Actions AI Analyzer - エラーログ解析ツール"""
     pass
@@ -55,7 +55,11 @@ def analyze(log_file, workflow, repository, min_level, output):
         console.print(f"ログファイル: {log_file}")
 
         # ログレベルを変換
-        log_level = LogLevel(min_level)
+        valid_levels = [level.value for level in LogLevel]
+        if min_level in valid_levels:
+            log_level = LogLevel(min_level)
+        else:
+            log_level = LogLevel.WARNING
 
         # アナライザーを作成
         analyzer = GitHubActionsAnalyzer()

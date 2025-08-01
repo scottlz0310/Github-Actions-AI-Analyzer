@@ -231,7 +231,7 @@ class GitHubActionsAnalyzer:
         pattern = match.pattern
 
         # 基本的な解決策テンプレート
-        if pattern.category.value == "dependency":
+        if pattern.category == "dependency":
             return SolutionProposal(
                 solution_id=f"sol_{pattern.id}_{len(analysis.pattern_matches)}",
                 title=f"{pattern.name}の解決",
@@ -267,7 +267,7 @@ class GitHubActionsAnalyzer:
         categories = {}
         for analysis in error_analyses:
             for match in analysis.pattern_matches:
-                category = match.pattern.category.value
+                category = match.pattern.category
                 categories[category] = categories.get(category, 0) + 1
 
         if categories:
@@ -288,7 +288,7 @@ class GitHubActionsAnalyzer:
             a
             for a in error_analyses
             if any(
-                m.pattern.category.value == "dependency"
+                m.pattern.category == "dependency"
                 for m in a.pattern_matches
             )
         ]
@@ -302,7 +302,7 @@ class GitHubActionsAnalyzer:
             a
             for a in error_analyses
             if any(
-                m.pattern.category.value == "permission"
+                m.pattern.category == "permission"
                 for m in a.pattern_matches
             )
         ]
