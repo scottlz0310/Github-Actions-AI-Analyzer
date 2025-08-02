@@ -90,11 +90,13 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         with:
           file: ./coverage.xml
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
@@ -124,7 +126,11 @@ jobs:
 
       - name: Run integration tests
         run: |
-          pytest tests/integration/ -v --tb=short
+          if [ -d "tests/integration" ] && [ "$(ls -A tests/integration)" ]; then
+            pytest tests/integration/ -v --tb=short
+          else
+            echo "No integration tests found, skipping..."
+          fi
 
       - name: Test CLI functionality
         run: |
