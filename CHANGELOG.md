@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2025-08-02
+
+### Fixed
+- **CodeQL Action非推奨問題**: v2からv3への更新によるセキュリティスキャンの修正
+- **コード品質チェック**: Black、isort、Flake8、MyPyの設定と実行エラーの修正
+- **ドキュメント生成**: Sphinx設定の修正（intersphinx_mapping、_staticディレクトリ）
+- **型チェック**: types-PyYAML依存関係の追加と自動インストール機能
+
+### Improved
+- **CI/CDパイプライン**: すべての品質チェックが正常に動作するよう改善
+- **セキュリティスキャン**: 権限設定の追加とCodeQL Action v3への完全移行
+- **開発環境**: 開発依存関係の整理と型スタブの自動インストール
+
+### Technical
+- GitHub Actionsワークフローの完全修復
+- コード品質メトリクスの正常化
+- ドキュメント生成プロセスの安定化
+- 型安全性の向上
+
 ## [0.1.2] - 2025-08-02
 
 ### Added
