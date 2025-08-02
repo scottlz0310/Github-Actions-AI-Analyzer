@@ -64,13 +64,15 @@ def main():
             print(f"  根本原因: {error.root_cause}")
             print(f"  重要度: {error.severity}")
             affected_steps = (
-                ', '.join(error.affected_steps)
-                if error.affected_steps else 'なし'
+                ", ".join(error.affected_steps)
+                if error.affected_steps
+                else "なし"
             )
             print(f"  影響ステップ: {affected_steps}")
             related_files = (
-                ', '.join(error.related_files)
-                if error.related_files else 'なし'
+                ", ".join(error.related_files)
+                if error.related_files
+                else "なし"
             )
             print(f"  関連ファイル: {related_files}")
 
