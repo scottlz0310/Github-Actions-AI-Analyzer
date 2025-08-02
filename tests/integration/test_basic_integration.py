@@ -16,7 +16,8 @@ def test_basic_import():
     """Test that main modules can be imported"""
     try:
         # Import modules to test they exist
-        import github_actions_ai_analyzer.core.analyzer
+        # Note: Import is used for testing module existence
+        import github_actions_ai_analyzer.core.analyzer  # noqa: F401
 
         assert True
     except ImportError as e:
