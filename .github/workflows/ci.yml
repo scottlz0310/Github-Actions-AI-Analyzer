@@ -51,6 +51,7 @@ jobs:
 
       - name: Run MyPy (type checking)
         run: |
+          mypy --install-types --non-interactive
           mypy src/ --ignore-missing-imports --disallow-untyped-defs
           echo "✅ Type checking passed"
 
