@@ -56,7 +56,9 @@ class TestContextCollector:
         with patch("os.getcwd") as mock_getcwd:
             mock_getcwd.return_value = "/tmp/test_repo"
 
-            with patch("pathlib.Path") as mock_path:
+            with patch(
+                "github_actions_ai_analyzer.core.context_collector.Path"
+            ) as mock_path:
                 mock_path_instance = Mock()
                 mock_path_instance.name = "test_repo"
                 mock_path_instance.__truediv__ = lambda self, other: Mock(
@@ -314,7 +316,9 @@ pytest==7.0.0
             (workflow_dir / "ci.yml").write_text("name: CI")
             (workflow_dir / "release.yml").write_text("name: Release")
 
-            with patch("pathlib.Path") as mock_path:
+            with patch(
+                "github_actions_ai_analyzer.core.context_collector.Path"
+            ) as mock_path:
                 mock_path.return_value = temp_path
 
                 result = self.collector._find_workflow_file()

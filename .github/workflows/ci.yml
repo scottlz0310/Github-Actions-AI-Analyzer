@@ -329,20 +329,26 @@ jobs:
         run: |
           pip list --outdated --format=freeze | grep -v "^-e" || echo "All dependencies are up to date"
 
-      - name: Create Dependabot alert
-        uses: actions/github-script@v6
+      - name: Check Dependabot alerts
+        uses: actions/github-script@v7
         with:
           script: |
-            const { data: alerts } = await github.rest.dependabot.listRepoAlerts({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-            });
-            
-            if (alerts.length > 0) {
-              console.log(`Found ${alerts.length} Dependabot alerts`);
-              for (const alert of alerts) {
-                console.log(`- ${alert.security_vulnerability.package.name}: ${alert.security_vulnerability.severity}`);
+            try {
+              const { data: alerts } = await github.rest.dependabot.listAlertsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open'
+              });
+              
+              if (alerts.length > 0) {
+                console.log(`Found ${alerts.length} open Dependabot alerts`);
+                for (const alert of alerts) {
+                  console.log(`- ${alert.security_vulnerability.package.name}: ${alert.security_vulnerability.severity}`);
+                }
+              } else {
+                console.log('No open Dependabot alerts found');
               }
-            } else {
-              console.log('No Dependabot alerts found');
+            } catch (error) {
+              console.log('Unable to fetch Dependabot alerts (may require admin permissions)');
+              console.log(`Error: ${error.message}`);
             } 

@@ -476,32 +476,51 @@ def main():
     """メイン関数"""
     analyzer = EnhancedGitHubActionsAnalyzer()
 
-    # レポートディレクトリ
-    reports_dir = Path("reports")
-
-    if not reports_dir.exists():
-        logger.error("reportsディレクトリが見つかりません")
-        sys.exit(1)
-
-    # 複数レポートの解析
-    logger.info("Enhanced GitHub Actionsレポートを解析中...")
-    analysis_results = analyzer.analyze_multiple_reports(reports_dir)
-
-    # CIシミュレーションログの解析
-    logs_dir = Path("logs")
-    if logs_dir.exists():
-        logger.info("ログファイルを解析中...")
-
-        # 最新のリリースワークフロー失敗ログを解析
-        log_files = [
-            logs_dir / "latest_ci_failure.log"
-        ]
-
+    # コマンドライン引数でログファイルが指定された場合
+    if len(sys.argv) > 1:
+        # 指定されたファイルのみを解析
+        log_files = [Path(arg) for arg in sys.argv[1:] if Path(arg).exists()]
+        if not log_files:
+            print("❌ 指定されたログファイルが見つかりません")
+            sys.exit(1)
+        
+        # ログファイルのみを解析
+        analysis_results = {}
         for log_file in log_files:
-            if log_file.exists():
-                logger.info(f"ログファイルを解析中: {log_file.name}")
-                log_analysis = analyzer.analyze_log_file(log_file)
-                analysis_results[f"log_analysis_{log_file.stem}"] = log_analysis
+            logger.info(f"ログファイルを解析中: {log_file.name}")
+            log_analysis = analyzer.analyze_log_file(log_file)
+            analysis_results[f"log_analysis_{log_file.stem}"] = log_analysis
+    else:
+        # デフォルト動作: レポートとログの両方を解析
+        reports_dir = Path("reports")
+
+        if not reports_dir.exists():
+            logger.error("reportsディレクトリが見つかりません")
+            sys.exit(1)
+
+        # 複数レポートの解析
+        logger.info("Enhanced GitHub Actionsレポートを解析中...")
+        analysis_results = analyzer.analyze_multiple_reports(reports_dir)
+
+        # CIシミュレーションログの解析
+        logs_dir = Path("logs")
+        if logs_dir.exists():
+            logger.info("ログファイルを解析中...")
+
+            # 最新のリリースワークフロー失敗ログを解析
+            log_files = [
+                logs_dir / "latest_ci_failure.log"
+            ]
+
+            for log_file in log_files:
+                if log_file.exists():
+                    logger.info(f"ログファイルを解析中: {log_file.name}")
+                    log_analysis = analyzer.analyze_log_file(log_file)
+                    analysis_results[f"log_analysis_{log_file.stem}"] = log_analysis
+
+    if not analysis_results:
+        print("❌ 解析対象のファイルがありません")
+        sys.exit(1)
 
     # 拡張レポート生成
     report = analyzer.generate_enhanced_report(analysis_results)
@@ -510,6 +529,8 @@ def main():
     print(report)
 
     # ファイルに保存
+    reports_dir = Path("reports")
+    reports_dir.mkdir(exist_ok=True)
     output_file = (
         reports_dir
         / f"enhanced_ai_analysis_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
