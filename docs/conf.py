@@ -21,7 +21,7 @@ copyright = '2024, Scott LZ'
 author = 'Scott LZ'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.1'
+release = '0.1.2'
 
 # -- General configuration ---------------------------------------------------
 
@@ -65,7 +65,9 @@ html_static_path = ['_static']
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3/', None),
+}
 
 # -- Options for todo extension ----------------------------------------------
 
