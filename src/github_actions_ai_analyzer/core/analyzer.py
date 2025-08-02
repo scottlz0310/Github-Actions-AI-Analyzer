@@ -5,11 +5,12 @@ GitHub Actions Analyzer
 """
 
 import uuid
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from ..types import (
     AnalysisResult,
     ErrorAnalysis,
+    ErrorPattern,
     LogEntry,
     LogLevel,
     PatternMatch,
@@ -24,7 +25,7 @@ from .pattern_matcher import PatternMatcher
 class GitHubActionsAnalyzer:
     """GitHub Actionsのログ解析を行うメインクラス"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.log_processor = LogProcessor()
         self.pattern_matcher = PatternMatcher()
         self.context_collector = ContextCollector()
@@ -105,10 +106,10 @@ class GitHubActionsAnalyzer:
         self, log_entries: List[LogEntry], pattern_matches: List[PatternMatch]
     ) -> List[ErrorAnalysis]:
         """エラーを解析"""
-        error_analyses = []
+        error_analyses: List[ErrorAnalysis] = []
 
         # パターンマッチをグループ化
-        matches_by_pattern = {}
+        matches_by_pattern: Dict[str, List[PatternMatch]] = {}
         for match in pattern_matches:
             pattern_id = match.pattern.id
             if pattern_id not in matches_by_pattern:
@@ -157,7 +158,7 @@ class GitHubActionsAnalyzer:
         return error_analyses
 
     def _estimate_root_cause(
-        self, pattern, log_entries: List[LogEntry]
+        self, pattern: ErrorPattern, log_entries: List[LogEntry]
     ) -> str:
         """根本原因を推定"""
         # パターンの説明を基本とする
@@ -264,7 +265,7 @@ class GitHubActionsAnalyzer:
         summary = f"合計{total_errors}個のエラーが検出され、{total_solutions}個の解決策が提案されました。"
 
         # エラーの種類別サマリー
-        categories = {}
+        categories: Dict[str, int] = {}
         for analysis in error_analyses:
             for match in analysis.pattern_matches:
                 category = match.pattern.category
@@ -288,8 +289,7 @@ class GitHubActionsAnalyzer:
             a
             for a in error_analyses
             if any(
-                m.pattern.category == "dependency"
-                for m in a.pattern_matches
+                m.pattern.category == "dependency" for m in a.pattern_matches
             )
         ]
 
@@ -302,8 +302,7 @@ class GitHubActionsAnalyzer:
             a
             for a in error_analyses
             if any(
-                m.pattern.category == "permission"
-                for m in a.pattern_matches
+                m.pattern.category == "permission" for m in a.pattern_matches
             )
         ]
 

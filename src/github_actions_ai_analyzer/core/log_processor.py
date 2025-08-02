@@ -14,7 +14,15 @@ from ..types import LogEntry, LogLevel, LogSource
 class LogProcessor:
     """GitHub Actionsログの前処理を行うクラス"""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """初期化"""
+        self.log_levels = {
+            "DEBUG": LogLevel.DEBUG,
+            "INFO": LogLevel.INFO,
+            "WARNING": LogLevel.WARNING,
+            "ERROR": LogLevel.ERROR,
+            "FATAL": LogLevel.FATAL,
+        }
         self.noise_patterns = [
             r"^::debug::",  # デバッグメッセージ
             r"^::notice::",  # 通知メッセージ
@@ -202,7 +210,7 @@ class LogProcessor:
         self, entries: List[LogEntry]
     ) -> Dict[str, List[LogEntry]]:
         """ステップごとにログエントリをグループ化"""
-        grouped = {}
+        grouped: dict[str, list[LogEntry]] = {}
         for entry in entries:
             step_name = entry.step_name or "unknown"
             if step_name not in grouped:

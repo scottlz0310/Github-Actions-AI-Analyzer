@@ -17,6 +17,10 @@ from github_actions_ai_analyzer.types import (
     PatternMatch,
     SolutionProposal,
 )
+from github_actions_ai_analyzer.types.pattern_types import (
+    ErrorPattern,
+    PatternCategory,
+)
 
 
 class TestGitHubActionsAnalyzer:
@@ -35,7 +39,7 @@ class TestGitHubActionsAnalyzer:
 
     def test_read_log_file_success(self):
         """ログファイル読み込み成功"""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             f.write("Test log content")
             log_file_path = f.name
 
@@ -44,6 +48,7 @@ class TestGitHubActionsAnalyzer:
             assert content == "Test log content"
         finally:
             import os
+
             os.unlink(log_file_path)
 
     def test_read_log_file_not_found(self):
@@ -53,8 +58,8 @@ class TestGitHubActionsAnalyzer:
 
     def test_read_log_file_encoding_error(self):
         """ログファイルのエンコーディングエラー"""
-        with tempfile.NamedTemporaryFile(mode='wb', delete=False) as f:
-            f.write(b'\xff\xfe\x00\x00')  # 無効なUTF-8
+        with tempfile.NamedTemporaryFile(mode="wb", delete=False) as f:
+            f.write(b"\xff\xfe\x00\x00")  # 無効なUTF-8
             log_file_path = f.name
 
         try:
@@ -62,6 +67,7 @@ class TestGitHubActionsAnalyzer:
                 self.analyzer._read_log_file(log_file_path)
         finally:
             import os
+
             os.unlink(log_file_path)
 
     def test_analyze_log_file_basic(self):
@@ -72,36 +78,43 @@ class TestGitHubActionsAnalyzer:
 2024-01-01T12:00:01.000Z error: ModuleNotFoundError: No module named 'requests'
 2024-01-01T12:00:02.000Z Step 2: Run tests
 """
-        
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             f.write(log_content)
             log_file_path = f.name
 
         try:
-            with patch.object(self.analyzer.log_processor, 'process_log_file') as mock_process:
+            with patch.object(
+                self.analyzer.log_processor, "process_log_file"
+            ) as mock_process:
                 mock_process.return_value = []
-                
-                with patch.object(self.analyzer.log_processor, 'filter_by_level') as mock_filter:
+
+                with patch.object(
+                    self.analyzer.log_processor, "filter_by_level"
+                ) as mock_filter:
                     mock_filter.return_value = []
-                    
-                    with patch.object(self.analyzer.pattern_matcher, 'match_patterns') as mock_match:
+
+                    with patch.object(
+                        self.analyzer.pattern_matcher, "match_patterns"
+                    ) as mock_match:
                         mock_match.return_value = []
-                        
+
                         result = self.analyzer.analyze_log_file(log_file_path)
-                        
+
                         assert result is not None
                         assert result.analysis_id is not None
                         assert result.error_analyses == []
                         assert result.solution_proposals == []
         finally:
             import os
+
             os.unlink(log_file_path)
 
     def test_analyze_errors_empty(self):
         """空のエラー解析"""
         log_entries = []
         pattern_matches = []
-        
+
         result = self.analyzer._analyze_errors(log_entries, pattern_matches)
         assert result == []
 
@@ -117,8 +130,11 @@ class TestGitHubActionsAnalyzer:
         )
 
         # テスト用のパターンマッチを作成
-        from github_actions_ai_analyzer.types import ErrorPattern, PatternCategory
-        
+        from github_actions_ai_analyzer.types import (
+            ErrorPattern,
+            PatternCategory,
+        )
+
         pattern = ErrorPattern(
             id="dep_missing_package",
             name="Missing Package",
@@ -139,11 +155,14 @@ class TestGitHubActionsAnalyzer:
         )
 
         result = self.analyzer._analyze_errors([entry], [match])
-        
+
         assert len(result) == 1
         analysis = result[0]
         assert analysis.error_id.startswith("error_dep_missing_package")
-        assert analysis.root_cause == "Pythonパッケージが見つからない (ステップ: Install dependencies)"
+        assert (
+            analysis.root_cause
+            == "Pythonパッケージが見つからない (ステップ: Install dependencies)"
+        )
         assert analysis.severity == "error"
         assert "Install dependencies" in analysis.affected_steps
 
@@ -151,7 +170,7 @@ class TestGitHubActionsAnalyzer:
         """根本原因の推定"""
         pattern = Mock()
         pattern.description = "テストエラー"
-        
+
         entry = LogEntry(
             timestamp=datetime.now(),
             level=LogLevel.ERROR,
@@ -167,7 +186,7 @@ class TestGitHubActionsAnalyzer:
         """ステップ名がない場合の根本原因推定"""
         pattern = Mock()
         pattern.description = "テストエラー"
-        
+
         entry = LogEntry(
             timestamp=datetime.now(),
             level=LogLevel.ERROR,
@@ -183,21 +202,21 @@ class TestGitHubActionsAnalyzer:
         # エラーレベルのマッチ
         error_match = Mock()
         error_match.pattern.severity = "error"
-        
+
         result = self.analyzer._determine_severity([error_match])
         assert result == "error"
 
         # 警告レベルのマッチ
         warning_match = Mock()
         warning_match.pattern.severity = "warning"
-        
+
         result = self.analyzer._determine_severity([warning_match])
         assert result == "warning"
 
         # 複数のマッチ（最も高い重要度を返す）
         fatal_match = Mock()
         fatal_match.pattern.severity = "fatal"
-        
+
         result = self.analyzer._determine_severity([error_match, fatal_match])
         assert result == "fatal"
 
@@ -268,10 +287,15 @@ class TestGitHubActionsAnalyzer:
     def test_generate_solutions_with_analysis(self):
         """解析結果がある場合の解決策生成"""
         # テスト用のエラー解析を作成
-        pattern = Mock()
-        pattern.id = "dep_missing_package"
-        pattern.category = Mock()
-        pattern.category.value = "dependency"
+        pattern = ErrorPattern(
+            id="dep_missing_package",
+            name="Missing Package",
+            category=PatternCategory.DEPENDENCY,
+            regex_pattern=r"ModuleNotFoundError",
+            description="Pythonパッケージが見つからない",
+            severity="error",
+            language="python",
+        )
 
         match = PatternMatch(
             pattern=pattern,
@@ -293,7 +317,7 @@ class TestGitHubActionsAnalyzer:
         )
 
         result = self.analyzer._generate_solutions([analysis])
-        
+
         assert len(result) == 1
         solution = result[0]
         assert solution.solution_id.startswith("sol_dep_missing_package")
@@ -302,12 +326,15 @@ class TestGitHubActionsAnalyzer:
 
     def test_create_solution_from_pattern_dependency(self):
         """依存関係パターンからの解決策作成"""
-        pattern = Mock()
-        pattern.id = "dep_missing_package"
-        pattern.name = "Missing Package"
-        pattern.description = "Pythonパッケージが見つからない"
-        pattern.category = Mock()
-        pattern.category.value = "dependency"
+        pattern = ErrorPattern(
+            id="dep_missing_package",
+            name="Missing Package",
+            category=PatternCategory.DEPENDENCY,
+            regex_pattern=r"ModuleNotFoundError",
+            description="Pythonパッケージが見つからない",
+            severity="error",
+            language="python",
+        )
 
         match = PatternMatch(
             pattern=pattern,
@@ -329,39 +356,25 @@ class TestGitHubActionsAnalyzer:
         )
 
         result = self.analyzer._create_solution_from_pattern(match, analysis)
-        
+
         assert result is not None
         assert result.solution_id.startswith("sol_dep_missing_package")
         assert result.title == "Missing Packageの解決"
         assert len(result.steps) == 3
 
     def test_create_solution_from_pattern_unknown_category(self):
-        """未知のカテゴリからの解決策作成"""
-        pattern = Mock()
-        pattern.category = Mock()
-        pattern.category.value = "unknown"
+        """未知のカテゴリを渡した場合はValidationError例外が発生する"""
+        from pydantic import ValidationError
 
-        match = PatternMatch(
-            pattern=pattern,
-            matched_text="test",
-            start_pos=0,
-            end_pos=4,
-            confidence=0.8,
-            context={},
-        )
-
-        analysis = ErrorAnalysis(
-            error_id="test_error",
-            log_entries=[],
-            pattern_matches=[match],
-            root_cause="Test error",
-            severity="error",
-            affected_steps=[],
-            related_files=[],
-        )
-
-        result = self.analyzer._create_solution_from_pattern(match, analysis)
-        assert result is None
+        with pytest.raises(ValidationError):
+            ErrorPattern(
+                id="unknown_pattern",
+                name="Unknown Pattern",
+                category="unknown",  # 存在しないカテゴリを直接指定
+                regex_pattern=r"unknown",
+                description="未知のパターン",
+                severity="error",
+            )
 
     def test_generate_summary_no_errors(self):
         """エラーがない場合のサマリー生成"""
@@ -371,9 +384,15 @@ class TestGitHubActionsAnalyzer:
     def test_generate_summary_with_errors(self):
         """エラーがある場合のサマリー生成"""
         # テスト用のエラー解析を作成
-        pattern = Mock()
-        pattern.category = Mock()
-        pattern.category.value = "dependency"
+        pattern = ErrorPattern(
+            id="dep_missing_package",
+            name="Missing Package",
+            category=PatternCategory.DEPENDENCY,
+            regex_pattern=r"ModuleNotFoundError",
+            description="Pythonパッケージが見つからない",
+            severity="error",
+            language="python",
+        )
 
         match = PatternMatch(
             pattern=pattern,
@@ -406,7 +425,10 @@ class TestGitHubActionsAnalyzer:
         )
 
         result = self.analyzer._generate_summary([analysis], [solution])
-        assert "合計1個のエラーが検出され、1個の解決策が提案されました。" in result
+        assert (
+            "合計1個のエラーが検出され、1個の解決策が提案されました。"
+            in result
+        )
         assert "dependency: 1個" in result
 
     def test_generate_recommendations_empty(self):
@@ -416,9 +438,15 @@ class TestGitHubActionsAnalyzer:
 
     def test_generate_recommendations_dependency_errors(self):
         """依存関係エラーの推奨事項生成"""
-        pattern = Mock()
-        pattern.category = Mock()
-        pattern.category.value = "dependency"
+        pattern = ErrorPattern(
+            id="dep_missing_package",
+            name="Missing Package",
+            category=PatternCategory.DEPENDENCY,
+            regex_pattern=r"ModuleNotFoundError",
+            description="Pythonパッケージが見つからない",
+            severity="error",
+            language="python",
+        )
 
         match = PatternMatch(
             pattern=pattern,
@@ -445,9 +473,15 @@ class TestGitHubActionsAnalyzer:
 
     def test_generate_recommendations_permission_errors(self):
         """権限エラーの推奨事項生成"""
-        pattern = Mock()
-        pattern.category = Mock()
-        pattern.category.value = "permission"
+        pattern = ErrorPattern(
+            id="perm_error",
+            name="Permission Error",
+            category=PatternCategory.PERMISSION,
+            regex_pattern=r"PermissionError",
+            description="権限エラー",
+            severity="error",
+            language="python",
+        )
 
         match = PatternMatch(
             pattern=pattern,
@@ -457,7 +491,6 @@ class TestGitHubActionsAnalyzer:
             confidence=0.8,
             context={},
         )
-
         analysis = ErrorAnalysis(
             error_id="test_error",
             log_entries=[],
@@ -467,7 +500,6 @@ class TestGitHubActionsAnalyzer:
             affected_steps=[],
             related_files=[],
         )
-
         result = self.analyzer._generate_recommendations([analysis])
         assert len(result) == 1
         assert "ファイル権限の設定を確認することを推奨します。" in result[0]
@@ -475,10 +507,15 @@ class TestGitHubActionsAnalyzer:
     def test_generate_recommendations_multiple_errors(self):
         """複数エラーの推奨事項生成"""
         # 依存関係エラー
-        dep_pattern = Mock()
-        dep_pattern.category = Mock()
-        dep_pattern.category.value = "dependency"
-
+        dep_pattern = ErrorPattern(
+            id="dep_missing_package",
+            name="Missing Package",
+            category=PatternCategory.DEPENDENCY,
+            regex_pattern=r"ModuleNotFoundError",
+            description="Pythonパッケージが見つからない",
+            severity="error",
+            language="python",
+        )
         dep_match = PatternMatch(
             pattern=dep_pattern,
             matched_text="test",
@@ -487,7 +524,6 @@ class TestGitHubActionsAnalyzer:
             confidence=0.8,
             context={},
         )
-
         dep_analysis = ErrorAnalysis(
             error_id="dep_error",
             log_entries=[],
@@ -497,12 +533,16 @@ class TestGitHubActionsAnalyzer:
             affected_steps=[],
             related_files=[],
         )
-
         # 権限エラー
-        perm_pattern = Mock()
-        perm_pattern.category = Mock()
-        perm_pattern.category.value = "permission"
-
+        perm_pattern = ErrorPattern(
+            id="perm_error",
+            name="Permission Error",
+            category=PatternCategory.PERMISSION,
+            regex_pattern=r"PermissionError",
+            description="権限エラー",
+            severity="error",
+            language="python",
+        )
         perm_match = PatternMatch(
             pattern=perm_pattern,
             matched_text="test",
@@ -511,7 +551,6 @@ class TestGitHubActionsAnalyzer:
             confidence=0.8,
             context={},
         )
-
         perm_analysis = ErrorAnalysis(
             error_id="perm_error",
             log_entries=[],
@@ -521,8 +560,9 @@ class TestGitHubActionsAnalyzer:
             affected_steps=[],
             related_files=[],
         )
-
-        result = self.analyzer._generate_recommendations([dep_analysis, perm_analysis])
+        result = self.analyzer._generate_recommendations(
+            [dep_analysis, perm_analysis]
+        )
         assert len(result) == 2
         assert any("依存関係の管理を改善" in rec for rec in result)
-        assert any("ファイル権限の設定を確認" in rec for rec in result) 
+        assert any("ファイル権限の設定を確認" in rec for rec in result)

@@ -4,7 +4,7 @@ AI プロンプト最適化器
 構造化されたエラー情報をAIが理解しやすい形式に変換します。
 """
 
-from typing import List
+from typing import Any, Dict, List
 
 from ..types import AnalysisResult, ErrorAnalysis, SolutionProposal
 
@@ -12,18 +12,16 @@ from ..types import AnalysisResult, ErrorAnalysis, SolutionProposal
 class AIPromptOptimizer:
     """AI用のプロンプト最適化を行うクラス"""
 
-    def __init__(self):
-        self.templates = {
-            "error_analysis": self._get_error_analysis_template(),
-            "solution_generation": self._get_solution_generation_template(),
-            "best_practices": self._get_best_practices_template(),
-        }
+    def __init__(self) -> None:
+        """初期化"""
+        self.template_cache: Dict[str, str] = {}
+        self.optimization_history: List[Dict[str, Any]] = []
 
     def generate_error_analysis_prompt(
         self, analysis_result: AnalysisResult
     ) -> str:
         """エラー解析用のプロンプトを生成"""
-        template = self.templates["error_analysis"]
+        template = self._get_error_analysis_template()
 
         # エラー情報を構造化
         error_summary = self._format_error_summary(
@@ -40,7 +38,7 @@ class AIPromptOptimizer:
 
     def generate_solution_prompt(self, analysis_result: AnalysisResult) -> str:
         """解決策生成用のプロンプトを生成"""
-        template = self.templates["solution_generation"]
+        template = self._get_solution_generation_template()
 
         # エラー詳細を構造化
         error_details = self._format_error_details(
@@ -61,7 +59,7 @@ class AIPromptOptimizer:
         self, analysis_result: AnalysisResult
     ) -> str:
         """ベストプラクティス提案用のプロンプトを生成"""
-        template = self.templates["best_practices"]
+        template = self._get_best_practices_template()
 
         # 現在の設定を構造化
         current_setup = self._format_current_setup(analysis_result)

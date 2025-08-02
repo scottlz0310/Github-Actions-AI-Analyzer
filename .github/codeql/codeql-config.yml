@@ -1,0 +1,41 @@
+name: "CodeQL Config"
+
+paths:
+  - "src/"
+  - "tests/"
+  - "examples/"
+
+paths-ignore:
+  - "**/*.md"
+  - "**/*.txt"
+  - "**/*.yml"
+  - "**/*.yaml"
+  - "**/*.toml"
+  - "**/*.json"
+  - "**/*.html"
+  - "**/*.css"
+  - "**/*.js"
+  - "**/*.ts"
+  - "**/*.pyc"
+  - "**/__pycache__/"
+  - "**/.git/"
+  - "**/.github/"
+  - "**/.pytest_cache/"
+  - "**/.mypy_cache/"
+  - "**/venv/"
+  - "**/dist/"
+  - "**/build/"
+  - "**/.eggs/"
+  - "**/*.egg-info/"
+
+queries:
+  - uses: security-and-quality
+  - uses: security-extended
+
+query-filters:
+  - include:
+      tags contain: python
+  - exclude:
+      tags contain: experimental
+  - exclude:
+      tags contain: very-low 

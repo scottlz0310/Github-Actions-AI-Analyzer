@@ -10,15 +10,15 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
-from ..core.analyzer import GitHubActionsAnalyzer
-from ..types import LogLevel
+from github_actions_ai_analyzer.core.analyzer import GitHubActionsAnalyzer
+from github_actions_ai_analyzer.types import AnalysisResult, LogLevel
 
 console = Console()
 
 
 @click.group()
 @click.version_option(version="0.1.1")
-def main():
+def main() -> None:
     """GitHub Actions AI Analyzer - エラーログ解析ツール"""
     pass
 
@@ -48,7 +48,9 @@ def main():
     default="text",
     help="出力形式",
 )
-def analyze(log_file, workflow, repository, min_level, output):
+def analyze(
+    log_file: str, workflow: str, repository: str, min_level: str, output: str
+) -> None:
     """ログファイルを解析してエラー分析を実行"""
     try:
         console.print("[bold blue]GitHub Actions AI Analyzer[/bold blue]")
@@ -83,7 +85,7 @@ def analyze(log_file, workflow, repository, min_level, output):
 
 @main.command()
 @click.argument("workflow_file", type=click.Path(exists=True))
-def validate(workflow_file):
+def validate(workflow_file: str) -> None:
     """ワークフローファイルを検証"""
     console.print("[bold blue]ワークフローファイル検証[/bold blue]")
     console.print(f"ファイル: {workflow_file}")
@@ -95,7 +97,7 @@ def validate(workflow_file):
 @main.command()
 @click.argument("directory", type=click.Path(exists=True))
 @click.option("--interval", "-i", type=int, default=30, help="監視間隔（秒）")
-def watch(directory, interval):
+def watch(directory: str, interval: int) -> None:
     """ディレクトリを監視してログファイルの変更を自動解析"""
     console.print("[bold blue]ログファイル監視[/bold blue]")
     console.print(f"ディレクトリ: {directory}")
@@ -105,7 +107,9 @@ def watch(directory, interval):
     console.print("[yellow]ファイル監視機能は未実装です[/yellow]")
 
 
-def _display_analysis_result(result, output_format: str):
+def _display_analysis_result(
+    result: AnalysisResult, output_format: str
+) -> None:
     """解析結果を表示"""
     if output_format == "text":
         _display_text_result(result)
@@ -115,7 +119,7 @@ def _display_analysis_result(result, output_format: str):
         _display_yaml_result(result)
 
 
-def _display_text_result(result):
+def _display_text_result(result: AnalysisResult) -> None:
     """テキスト形式で結果を表示"""
     # サマリー
     summary_panel = Panel(
@@ -175,7 +179,7 @@ def _display_text_result(result):
         console.print(recommendations_panel)
 
 
-def _display_json_result(result):
+def _display_json_result(result: AnalysisResult) -> None:
     """JSON形式で結果を表示"""
     import json
 
@@ -184,7 +188,7 @@ def _display_json_result(result):
     )
 
 
-def _display_yaml_result(result):
+def _display_yaml_result(result: AnalysisResult) -> None:
     """YAML形式で結果を表示"""
     import yaml
 

@@ -12,7 +12,6 @@ from github_actions_ai_analyzer.types import (
     LogLevel,
     LogSource,
     PatternCategory,
-    PatternMatch,
 )
 
 
@@ -286,8 +285,14 @@ class TestPatternMatcher:
             PatternCategory.PERMISSION
         )
 
-        assert all(p.category == PatternCategory.DEPENDENCY for p in dependency_patterns)
-        assert all(p.category == PatternCategory.PERMISSION for p in permission_patterns)
+        assert all(
+            p.category == PatternCategory.DEPENDENCY
+            for p in dependency_patterns
+        )
+        assert all(
+            p.category == PatternCategory.PERMISSION
+            for p in permission_patterns
+        )
 
     def test_get_patterns_by_language(self):
         """言語別パターン取得"""
@@ -338,7 +343,10 @@ class TestPatternMatcher:
         # 複数のパターンにマッチする可能性がある
         assert len(matches) >= 1
         pattern_ids = [m.pattern.id for m in matches]
-        assert any(pid in ["perm_denied", "env_command_not_found"] for pid in pattern_ids)
+        assert any(
+            pid in ["perm_denied", "env_command_not_found"]
+            for pid in pattern_ids
+        )
 
     def test_match_entry_low_confidence_filtered(self):
         """低信頼度のマッチが除外される"""
@@ -364,5 +372,7 @@ class TestPatternMatcher:
         matches = self.matcher._match_entry(entry)
 
         # 低信頼度のパターンは除外される
-        low_confidence_matches = [m for m in matches if m.pattern.id == "low_confidence"]
-        assert len(low_confidence_matches) == 0 
+        low_confidence_matches = [
+            m for m in matches if m.pattern.id == "low_confidence"
+        ]
+        assert len(low_confidence_matches) == 0

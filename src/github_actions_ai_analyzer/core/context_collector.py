@@ -17,12 +17,9 @@ from ..types import EnvironmentContext, RepositoryContext, WorkflowContext
 class ContextCollector:
     """コンテキスト情報を収集するクラス"""
 
-    def __init__(self):
-        self.supported_languages = {
-            "python": ["requirements.txt", "pyproject.toml", "setup.py"],
-            "javascript": ["package.json", "package-lock.json", "yarn.lock"],
-            "java": ["pom.xml", "build.gradle", "gradle.properties"],
-        }
+    def __init__(self) -> None:
+        """初期化"""
+        pass
 
     def collect_repository_context(
         self, repository_path: Optional[str] = None
@@ -107,49 +104,76 @@ class ContextCollector:
         self, repo_path: Path
     ) -> tuple[Optional[str], List[str]]:
         """言語とフレームワークを検出"""
-        frameworks = []
+        language = self._detect_language(repo_path)
+        frameworks = self._detect_frameworks(repo_path, language)
+        return language, frameworks
 
-        # Python
+    def _detect_language(self, repo_path: Path) -> Optional[str]:
+        """言語を検出"""
         if (repo_path / "requirements.txt").exists() or (
             repo_path / "pyproject.toml"
         ).exists():
-            language = "python"
-            if (repo_path / "manage.py").exists():
-                frameworks.append("django")
-            if (repo_path / "app.py").exists() or (
-                repo_path / "main.py"
-            ).exists():
-                frameworks.append("flask")
-        # JavaScript
+            return "python"
         elif (repo_path / "package.json").exists():
-            language = "javascript"
-            package_json = repo_path / "package.json"
-            if package_json.exists():
-                try:
-                    with open(package_json, "r") as f:
-                        data = json.load(f)
-                    deps = data.get("dependencies", {})
-                    if "react" in deps:
-                        frameworks.append("react")
-                    if "vue" in deps:
-                        frameworks.append("vue")
-                    if "next" in deps:
-                        frameworks.append("next.js")
-                except Exception:
-                    pass
-        # Java
+            return "javascript"
         elif (repo_path / "pom.xml").exists() or (
             repo_path / "build.gradle"
         ).exists():
-            language = "java"
-            if (repo_path / "pom.xml").exists():
-                frameworks.append("maven")
-            if (repo_path / "build.gradle").exists():
-                frameworks.append("gradle")
-        else:
-            language = None
+            return "java"
+        return None
 
-        return language, frameworks
+    def _detect_frameworks(
+        self, repo_path: Path, language: Optional[str]
+    ) -> List[str]:
+        """フレームワークを検出"""
+        frameworks = []
+
+        if language == "python":
+            frameworks.extend(self._detect_python_frameworks(repo_path))
+        elif language == "javascript":
+            frameworks.extend(self._detect_javascript_frameworks(repo_path))
+        elif language == "java":
+            frameworks.extend(self._detect_java_frameworks(repo_path))
+
+        return frameworks
+
+    def _detect_python_frameworks(self, repo_path: Path) -> List[str]:
+        """Pythonフレームワークを検出"""
+        frameworks = []
+        if (repo_path / "manage.py").exists():
+            frameworks.append("django")
+        if (repo_path / "app.py").exists() or (repo_path / "main.py").exists():
+            frameworks.append("flask")
+        return frameworks
+
+    def _detect_javascript_frameworks(self, repo_path: Path) -> List[str]:
+        """JavaScriptフレームワークを検出"""
+        frameworks = []
+        package_json = repo_path / "package.json"
+        if package_json.exists():
+            try:
+                with open(package_json, "r") as f:
+                    data = json.load(f)
+                deps = data.get("dependencies", {})
+                if "react" in deps:
+                    frameworks.append("react")
+                if "vue" in deps:
+                    frameworks.append("vue")
+                if "next" in deps:
+                    frameworks.append("next.js")
+            except (FileNotFoundError, json.JSONDecodeError, KeyError):
+                # ファイルが見つからない、JSON形式が不正、キーが存在しない場合は無視
+                pass
+        return frameworks
+
+    def _detect_java_frameworks(self, repo_path: Path) -> List[str]:
+        """Javaフレームワークを検出"""
+        frameworks = []
+        if (repo_path / "pom.xml").exists():
+            frameworks.append("maven")
+        if (repo_path / "build.gradle").exists():
+            frameworks.append("gradle")
+        return frameworks
 
     def _detect_package_managers(self, repo_path: Path) -> List[str]:
         """パッケージマネージャーを検出"""
@@ -187,7 +211,8 @@ class ContextCollector:
                             if line.strip() and not line.startswith("#")
                         ]
                     dependencies["requirements"] = deps
-                except:
+                except (FileNotFoundError, PermissionError):
+                    # ファイルが見つからない、権限エラーの場合は無視
                     pass
 
         elif language == "javascript":
@@ -200,7 +225,12 @@ class ContextCollector:
                     dependencies["devDependencies"] = data.get(
                         "devDependencies", {}
                     )
-                except:
+                except (
+                    FileNotFoundError,
+                    json.JSONDecodeError,
+                    PermissionError,
+                ):
+                    # ファイルが見つからない、JSON形式が不正、権限エラーの場合は無視
                     pass
 
         return dependencies
@@ -281,12 +311,25 @@ class ContextCollector:
 
     def _is_tool_available(self, tool: str) -> bool:
         """ツールが利用可能かどうかを確認"""
-        try:
-            import subprocess
+        # セキュリティ: 許可されたツールのみをチェック
+        allowed_tools = {
+            "git",
+            "python",
+            "node",
+            "npm",
+            "java",
+            "mvn",
+            "gradle",
+        }
+        if tool not in allowed_tools:
+            return False
 
-            result = subprocess.run(
+        try:
+            import subprocess  # nosec B404
+
+            result = subprocess.run(  # nosec B603
                 [tool, "--version"], capture_output=True, text=True
             )
             return result.returncode == 0
-        except:
+        except (FileNotFoundError, subprocess.SubprocessError):
             return False
