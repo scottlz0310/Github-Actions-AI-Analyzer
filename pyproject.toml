@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "github-actions-ai-analyzer"
-version = "0.1.1"
-description = "GitHub Actionsのエラーログを解析し、AIによる改善案生成を支援するライブラリ"
+version = "0.1.2"
+description = "GitHub Actionsのエラーログを解析し、AIによる改善案生成と品質向上を支援するライブラリ"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
@@ -23,7 +23,10 @@ keywords = [
     "automation",
     "logging",
     "debugging",
-    "devops"
+    "devops",
+    "quality-improvement",
+    "ai-quality",
+    "continuous-improvement"
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -72,6 +75,15 @@ dev = [
     "twine>=4.0.0",
     "build>=0.10.0",
     "commitizen>=3.0.0",
+]
+
+ai-quality = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "flake8>=6.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.0.0",
 ]
 
 [project.scripts]
