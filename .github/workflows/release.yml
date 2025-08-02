@@ -37,29 +37,26 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref_name }}
-          body: |
-            ## 🚀 What's New in ${{ github.ref_name }}
+        run: |
+          gh release create ${{ github.ref_name }} \
+            --title "Release ${{ github.ref_name }}" \
+            --notes "## 🚀 What's New in ${{ github.ref_name }}
             
             ### ✨ Features
             - Enhanced CI/CD pipeline
             - Improved code quality checks
             - Comprehensive security scanning
             - Automated dependency management
+            - AI品質向上システム統合
             
             ### 🐛 Bug Fixes
             - Various improvements and optimizations
             
             ### 📦 Installation
             
-            ```bash
+            \`\`\`bash
             pip install github-actions-ai-analyzer==${{ github.ref_name }}
-            ```
+            \`\`\`
             
             ### 📚 Documentation
             
@@ -67,29 +64,17 @@ jobs:
             
             ### 🤝 Contributing
             
-            We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-          draft: false
-          prerelease: false
+            We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Release Assets
-        uses: actions/upload-release-asset@v1
+        run: |
+          gh release upload ${{ github.ref_name }} \
+            ./dist/github_actions_ai_analyzer-${{ github.ref_name }}.tar.gz \
+            ./dist/github_actions_ai_analyzer-${{ github.ref_name }}-py3-none-any.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/github_actions_ai_analyzer-${{ github.ref_name }}.tar.gz
-          asset_name: github_actions_ai_analyzer-${{ github.ref_name }}.tar.gz
-          asset_content_type: application/gzip
-
-      - name: Upload Wheel Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/github_actions_ai_analyzer-${{ github.ref_name }}-py3-none-any.whl
-          asset_name: github_actions_ai_analyzer-${{ github.ref_name }}-py3-none-any.whl
-          asset_content_type: application/zip
 
   pypi-publish:
     name: Publish to PyPI
