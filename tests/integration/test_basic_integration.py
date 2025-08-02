@@ -2,8 +2,9 @@
 Basic integration tests for GitHub Actions AI Analyzer
 """
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 
 def test_integration_directory_exists():
