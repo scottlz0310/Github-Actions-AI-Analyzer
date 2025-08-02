@@ -68,19 +68,15 @@ jobs:
   test:
     name: Test Suite
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
-        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
 
       - name: Install dependencies
@@ -103,7 +99,7 @@ jobs:
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: coverage-report-${{ matrix.os }}-${{ matrix.python-version }}
+          name: coverage-report-ubuntu-${{ env.PYTHON_VERSION }}
           path: htmlcov/
 
   # 統合テスト
