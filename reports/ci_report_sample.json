@@ -1,0 +1,32 @@
+{
+  "timestamp": "2025-08-02T08:39:32Z",
+  "overall_status": "WARNING",
+  "total_duration": 245.67,
+  "checks": {
+    "テストチェック": {
+      "status": "warn",
+      "message": "テストファイルの収集に失敗しました",
+      "duration": 12.34
+    },
+    "構文チェック": {
+      "status": "pass",
+      "message": "構文チェックが正常に完了しました",
+      "duration": 5.67
+    },
+    "インポートチェック": {
+      "status": "pass",
+      "message": "インポートチェックが正常に完了しました",
+      "duration": 3.45
+    },
+    "依存関係チェック": {
+      "status": "pass",
+      "message": "依存関係チェックが正常に完了しました",
+      "duration": 8.90
+    },
+    "プロジェクト構造": {
+      "status": "pass",
+      "message": "プロジェクト構造チェックが正常に完了しました",
+      "duration": 2.34
+    }
+  }
+} 

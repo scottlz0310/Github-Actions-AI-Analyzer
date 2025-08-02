@@ -4,8 +4,40 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![AI Quality](https://img.shields.io/badge/AI%20Quality-Enhanced-brightgreen.svg)](https://github.com/scottlz0310/Github-Actions-AI-Analyzer)
 
 GitHub Actionsのエラーログを解析し、AIによる改善案生成を支援するライブラリ・ツールです。
+
+## 🤖 AI品質向上システム統合
+
+このリポジトリには、PhotoGeoViewプロジェクトで開発された**AI品質向上システム**が統合されています。自動的なテスト品質向上と継続的な改善を支援します。
+
+### 🎯 AI品質向上システムの機能
+
+- **自動品質解析**: CIレポートとログファイルの自動解析
+- **品質メトリクス計算**: 総合品質スコアの算出
+- **改善提案生成**: 具体的な修正アクションの提案
+- **自動修正実行**: コードフォーマットの自動修正
+- **品質レポート生成**: 包括的な品質レポートの生成
+
+### 📊 品質メトリクス
+
+- **総合品質スコア**: プロジェクト全体の品質評価
+- **エラー頻度**: 1000行あたりのエラー数
+- **警告頻度**: 1000行あたりの警告数
+- **問題密度**: コードの問題密度
+
+### 🚀 使用方法
+
+```bash
+# AI品質向上システムの実行
+python tools/github_actions_ai_analyzer_enhanced.py
+
+# GitHub Actionsワークフローの実行
+# .github/workflows/ai-quality-improvement.yml
+```
+
+詳細については、[AI品質統合ガイド](docs/ai_quality_integration_guide.md)をご覧ください。
 
 ## 📖 概要
 
