@@ -1,7 +1,7 @@
 # GitHub Actions AI Analyzer
 
 [![PyPI version](https://badge.fury.io/py/github-actions-ai-analyzer.svg)](https://badge.fury.io/py/github-actions-ai-analyzer)
-[![Version](https://img.shields.io/badge/version-0.1.5-blue.svg)](https://github.com/scottlz0310/Github-Actions-AI-Analyzer/releases/tag/v0.1.4)
+[![Version](https://img.shields.io/badge/version-0.1.6-blue.svg)](https://github.com/scottlz0310/Github-Actions-AI-Analyzer/releases/tag/v0.1.4)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -84,7 +84,7 @@ GitHub Actionsのワークフロー実行で発生するエラーログは、大
 pip install github-actions-ai-analyzer
 
 # 特定のバージョンをインストール
-pip install github-actions-ai-analyzer==0.1.5
+pip install github-actions-ai-analyzer==0.1.6
 
 # AI品質向上システム付きでインストール
 pip install github-actions-ai-analyzer[ai-quality]

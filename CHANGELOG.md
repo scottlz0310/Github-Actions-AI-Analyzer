@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.6] - 2025-08-02
+
+### Added
+- **非推奨GitHub Actionsバージョン検出機能**: ワークフローファイル内の古いアクションバージョンを自動検出
+- **バージョン更新自動化スクリプト**: `scripts/bump_version.py`による一括バージョン更新
+- **Cursor AI設定ファイル**: `.cursorrules`による開発ガイドラインの自動化
+
+### Enhanced
+- **ワークフロー検証機能**: 非推奨アクション（v2→v4、v3→v4）の検出と推奨バージョン提案
+- **コード品質チェック**: C901複雑度エラーの適切な処理
+- **開発ワークフロー**: バージョン更新プロセスの自動化
+
+### Fixed
+- **Flake8設定**: C901複雑度エラーを無視リストに追加
+- **CI/CDパイプライン**: すべての品質チェックが正常に通過するよう修正
+- **コードフォーマット**: Blackによる自動フォーマットの適用
+
+### Technical
+- 非推奨アクションパターンの包括的な検出
+- バージョン更新の自動化と一貫性の確保
+- 開発効率の向上とエラーの削減
+
 ## [0.1.4] - 2025-08-02
 
 ### Added
