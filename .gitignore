@@ -176,3 +176,6 @@ Desktop.ini
 test_logs/
 *.log
 logs/
+
+# AI analysis reports
+reports/

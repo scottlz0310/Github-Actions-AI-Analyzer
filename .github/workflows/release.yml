@@ -74,9 +74,11 @@ jobs:
 
       - name: Upload Release Assets
         run: |
+          VERSION="${{ github.ref_name }}"
+          VERSION_NO_V="${VERSION#v}"
           gh release upload ${{ github.ref_name }} \
-            ./dist/github_actions_ai_analyzer-${{ github.ref_name }}.tar.gz \
-            ./dist/github_actions_ai_analyzer-${{ github.ref_name }}-py3-none-any.whl
+            ./dist/github_actions_ai_analyzer-${VERSION_NO_V}.tar.gz \
+            ./dist/github_actions_ai_analyzer-${VERSION_NO_V}-py3-none-any.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

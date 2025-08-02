@@ -492,10 +492,9 @@ def main():
     if logs_dir.exists():
         logger.info("ログファイルを解析中...")
 
-        # 複数のログファイルを解析
+        # 最新のリリースワークフロー失敗ログを解析
         log_files = [
-            logs_dir / "ci-simulation.log",
-            logs_dir / "failed_workflow_log.txt",
+            logs_dir / "latest_failure_fixed.log"
         ]
 
         for log_file in log_files:
