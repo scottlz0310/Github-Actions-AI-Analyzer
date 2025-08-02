@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - 2025-08-02
+
+### Added
+- **ワークフローファイル検証機能**: GitHub Actionsワークフローファイルの構文チェックと検証
+- **YAML構文チェック**: ワークフローファイルのYAML構文の妥当性検証
+- **必須フィールド検証**: name、on、jobsフィールドの存在確認
+- **ジョブ構造検証**: ジョブの重複チェックとステップ数の確認
+- **ベストプラクティスチェック**: タイムアウト設定や権限設定の推奨事項
+- **視覚的な結果表示**: Richライブラリを使用した美しいテーブル表示
+
+### Features
+- ワークフローファイルの事前検証による品質向上
+- 複数のワークフローファイルの一括検証
+- 詳細な検証結果と改善提案の表示
+- エラーと警告の明確な区別
+
+### Technical
+- validateコマンドの完全実装
+- YAML解析エンジンの統合
+- ワークフロー構造の自動解析
+- ベストプラクティス推奨システム
+
 ## [0.1.3] - 2025-08-02
 
 ### Fixed

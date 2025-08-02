@@ -1,7 +1,7 @@
 # GitHub Actions AI Analyzer
 
 [![PyPI version](https://badge.fury.io/py/github-actions-ai-analyzer.svg)](https://badge.fury.io/py/github-actions-ai-analyzer)
-[![Version](https://img.shields.io/badge/version-0.1.3-blue.svg)](https://github.com/scottlz0310/Github-Actions-AI-Analyzer/releases/tag/v0.1.3)
+[![Version](https://img.shields.io/badge/version-0.1.4-blue.svg)](https://github.com/scottlz0310/Github-Actions-AI-Analyzer/releases/tag/v0.1.4)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -84,7 +84,7 @@ GitHub Actionsのワークフロー実行で発生するエラーログは、大
 pip install github-actions-ai-analyzer
 
 # 特定のバージョンをインストール
-pip install github-actions-ai-analyzer==0.1.3
+pip install github-actions-ai-analyzer==0.1.4
 
 # AI品質向上システム付きでインストール
 pip install github-actions-ai-analyzer[ai-quality]
@@ -201,8 +201,38 @@ gh-actions-analyzer analyze log.txt -o json
 # 最小ログレベルを指定（error以上のみ）
 gh-actions-analyzer analyze log.txt -l error
 
+# ワークフローファイルを検証
+gh-actions-analyzer validate .github/workflows/ci.yml
+
+# 複数のワークフローファイルを検証
+gh-actions-analyzer validate .github/workflows/security.yml
+gh-actions-analyzer validate .github/workflows/release.yml
+
 # ヘルプを表示
 gh-actions-analyzer --help
+```
+
+### ワークフローファイル検証機能
+
+**検証項目**:
+- ✅ YAML構文の妥当性
+- ✅ 必須フィールド（name、on、jobs）の存在
+- ✅ ジョブ名の重複チェック
+- ✅ ステップ構造の検証
+- ⚠️ ベストプラクティス（タイムアウト設定、権限設定）
+
+**検証結果例**:
+```
+ワークフローファイル検証結果
+┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ 項目               ┃ 状態    ┃ 詳細                                                                               ┃
+┡━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ YAML構文           │ ✅ 正常 │ 有効なYAML形式です                                                                 │
+│ 必須フィールド     │ ✅ 正常 │ すべての必須フィールドが存在します: name, on, jobs                                 │
+│ ジョブ数           │ ✅ 正常 │ 9個のジョブが定義されています                                                      │
+│ ジョブ名重複       │ ✅ 正常 │ 重複したジョブ名はありません                                                       │
+│ ベストプラクティス │ ⚠️ 警告  │ 一部のジョブにタイムアウト設定がありません                                       │
+└────────────────────┴─────────┴────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 出力例
