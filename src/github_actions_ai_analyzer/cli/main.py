@@ -84,6 +84,132 @@ def analyze(
         raise click.Abort()
 
 
+def _validate_workflow_structure(workflow_data: dict) -> tuple[dict, bool]:
+    """ワークフローの基本構造を検証"""
+    # 必須フィールドの確認
+    required_fields = ["name", "on", "jobs"]
+    missing_fields = [
+        field for field in required_fields if field not in workflow_data
+    ]
+
+    # YAMLの読み込み問題を考慮して、実際のフィールドを確認
+    actual_fields = list(workflow_data.keys())
+    if "on" not in actual_fields and True in actual_fields:
+        # onフィールドがTrueとして読み込まれている場合
+        workflow_data["on"] = workflow_data[True]
+        del workflow_data[True]
+        missing_fields = [
+            field for field in required_fields if field not in workflow_data
+        ]
+
+    if missing_fields:
+        console.print(
+            f"[bold red]エラー: 必須フィールドが不足しています: "
+            f"{', '.join(missing_fields)}[/bold red]"
+        )
+        console.print(
+            f"[yellow]利用可能なフィールド: {list(workflow_data.keys())}[/yellow]"
+        )
+        return {}, False
+
+    # ジョブの存在を確認
+    jobs = workflow_data["jobs"]
+    if not isinstance(jobs, dict) or not jobs:
+        console.print(
+            "[bold red]エラー: ワークフローファイルに有効な'jobs'セクションが見つかりません。[/bold red]"
+        )
+        return {}, False
+
+    return jobs, True
+
+
+def _check_best_practices(jobs: dict) -> list[str]:
+    """ベストプラクティスをチェック"""
+    best_practices = []
+
+    # タイムアウト設定の確認
+    for job_name, job_config in jobs.items():
+        if (
+            isinstance(job_config, dict)
+            and "timeout-minutes" not in job_config
+        ):
+            best_practices.append(
+                f"ジョブ '{job_name}' にタイムアウト設定がありません"
+            )
+
+    # 権限設定の確認
+    for job_name, job_config in jobs.items():
+        if isinstance(job_config, dict) and "permissions" not in job_config:
+            best_practices.append(
+                f"ジョブ '{job_name}' に権限設定がありません"
+            )
+
+    # GitHub Actionsバージョン番号の確認
+    deprecated_actions = []
+    for job_name, job_config in jobs.items():
+        if isinstance(job_config, dict) and "steps" in job_config:
+            steps = job_config["steps"]
+            if isinstance(steps, list):
+                for step in steps:
+                    if isinstance(step, dict) and "uses" in step:
+                        action = step["uses"]
+
+                        # 非推奨のバージョンをチェック
+                        deprecated_patterns = [
+                            ("actions/checkout@v2", "actions/checkout@v4"),
+                            (
+                                "actions/setup-python@v2",
+                                "actions/setup-python@v4",
+                            ),
+                            (
+                                "actions/setup-python@v3",
+                                "actions/setup-python@v4",
+                            ),
+                            (
+                                "github/codeql-action/init@v2",
+                                "github/codeql-action/init@v3",
+                            ),
+                            (
+                                "github/codeql-action/autobuild@v2",
+                                "github/codeql-action/autobuild@v3",
+                            ),
+                            (
+                                "github/codeql-action/analyze@v2",
+                                "github/codeql-action/analyze@v3",
+                            ),
+                            (
+                                "github/codeql-action/upload-sarif@v2",
+                                "github/codeql-action/upload-sarif@v3",
+                            ),
+                            (
+                                "actions/upload-artifact@v2",
+                                "actions/upload-artifact@v4",
+                            ),
+                            (
+                                "actions/download-artifact@v2",
+                                "actions/download-artifact@v4",
+                            ),
+                            ("actions/cache@v2", "actions/cache@v4"),
+                            (
+                                "actions/github-script@v6",
+                                "actions/github-script@v7",
+                            ),
+                        ]
+
+                        for deprecated, recommended in deprecated_patterns:
+                            if action == deprecated:
+                                deprecated_actions.append(
+                                    f"'{action}' → '{recommended}'"
+                                )
+                                break
+
+    # 非推奨アクションをベストプラクティスに追加
+    if deprecated_actions:
+        best_practices.extend(deprecated_actions[:3])
+
+    return best_practices
+
+
 @main.command()
 @click.argument("workflow_file", type=click.Path(exists=True))
 def validate(workflow_file: str) -> None:
@@ -122,7 +248,8 @@ def validate(workflow_file: str) -> None:
 
         if missing_fields:
             console.print(
-                f"[bold red]エラー: 必須フィールドが不足しています: {', '.join(missing_fields)}[/bold red]"
+                f"[bold red]エラー: 必須フィールドが不足しています: "
+                f"{', '.join(missing_fields)}[/bold red]"
             )
             console.print(
                 f"[yellow]利用可能なフィールド: {list(workflow_data.keys())}[/yellow]"
@@ -191,91 +318,8 @@ def validate(workflow_file: str) -> None:
 
         table.add_row("総ステップ数", "✅ 正常", f"{total_steps}個のステップ")
 
-        # ベストプラクティスの確認
-        best_practices = []
-
-        # タイムアウト設定の確認
-        for job_name, job_config in jobs.items():
-            if (
-                isinstance(job_config, dict)
-                and "timeout-minutes" not in job_config
-            ):
-                best_practices.append(
-                    f"ジョブ '{job_name}' にタイムアウト設定がありません"
-                )
-
-        # 権限設定の確認
-        for job_name, job_config in jobs.items():
-            if (
-                isinstance(job_config, dict)
-                and "permissions" not in job_config
-            ):
-                best_practices.append(
-                    f"ジョブ '{job_name}' に権限設定がありません"
-                )
-
-        # GitHub Actionsバージョン番号の確認
-        deprecated_actions = []
-        for job_name, job_config in jobs.items():
-            if isinstance(job_config, dict) and "steps" in job_config:
-                steps = job_config["steps"]
-                if isinstance(steps, list):
-                    for step in steps:
-                        if isinstance(step, dict) and "uses" in step:
-                            action = step["uses"]
-
-                            # 非推奨のバージョンをチェック
-                            deprecated_patterns = [
-                                ("actions/checkout@v2", "actions/checkout@v4"),
-                                (
-                                    "actions/setup-python@v2",
-                                    "actions/setup-python@v4",
-                                ),
-                                (
-                                    "actions/setup-python@v3",
-                                    "actions/setup-python@v4",
-                                ),
-                                (
-                                    "github/codeql-action/init@v2",
-                                    "github/codeql-action/init@v3",
-                                ),
-                                (
-                                    "github/codeql-action/autobuild@v2",
-                                    "github/codeql-action/autobuild@v3",
-                                ),
-                                (
-                                    "github/codeql-action/analyze@v2",
-                                    "github/codeql-action/analyze@v3",
-                                ),
-                                (
-                                    "github/codeql-action/upload-sarif@v2",
-                                    "github/codeql-action/upload-sarif@v3",
-                                ),
-                                (
-                                    "actions/upload-artifact@v2",
-                                    "actions/upload-artifact@v4",
-                                ),
-                                (
-                                    "actions/download-artifact@v2",
-                                    "actions/download-artifact@v4",
-                                ),
-                                ("actions/cache@v2", "actions/cache@v4"),
-                                (
-                                    "actions/github-script@v6",
-                                    "actions/github-script@v7",
-                                ),
-                            ]
-
-                            for deprecated, recommended in deprecated_patterns:
-                                if action == deprecated:
-                                    deprecated_actions.append(
-                                        f"'{action}' → '{recommended}'"
-                                    )
-                                    break
-
-        # 非推奨アクションの警告を追加
-        if deprecated_actions:
-            best_practices.extend(deprecated_actions[:3])
+        # ベストプラクティスの確認（簡素化版）
+        best_practices = _check_best_practices(jobs)
 
         if best_practices:
             table.add_row(
