@@ -105,7 +105,10 @@ class AIPromptOptimizer:
         context_parts = [
             f"リポジトリ: {repo.name}",
             f"主要言語: {repo.language or 'unknown'}",
-            f"フレームワーク: {', '.join(repo.frameworks) if repo.frameworks else 'none'}",
+            (
+                f"フレームワーク: "
+                f"{', '.join(repo.frameworks) if repo.frameworks else 'none'}"
+            ),
             f"パッケージマネージャー: {', '.join(repo.package_managers)}",
             f"ワークフロー: {workflow.name}",
             f"トリガー: {workflow.trigger}",
@@ -172,7 +175,10 @@ class AIPromptOptimizer:
         setup_parts = [
             f"リポジトリ名: {repo.name}",
             f"主要言語: {repo.language or 'unknown'}",
-            f"使用フレームワーク: {', '.join(repo.frameworks) if repo.frameworks else 'none'}",
+            (
+                f"使用フレームワーク: "
+                f"{', '.join(repo.frameworks) if repo.frameworks else 'none'}"
+            ),
             f"パッケージマネージャー: {', '.join(repo.package_managers)}",
             f"ワークフロー名: {workflow.name}",
             f"トリガー条件: {workflow.trigger}",

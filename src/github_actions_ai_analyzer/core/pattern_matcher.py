@@ -27,7 +27,9 @@ class PatternMatcher:
                     id="dep_missing_package",
                     name="Missing Package",
                     category=PatternCategory.DEPENDENCY,
-                    regex_pattern=r"ModuleNotFoundError: No module named '([^']+)'",
+                    regex_pattern=(
+                        r"ModuleNotFoundError: No module named '([^']+)'"
+                    ),
                     description="Pythonパッケージが見つからない",
                     severity="error",
                     language="python",
@@ -57,7 +59,10 @@ class PatternMatcher:
                     id="dep_package_not_found",
                     name="Package Not Found",
                     category=PatternCategory.DEPENDENCY,
-                    regex_pattern=r"ERROR: Could not find a version that satisfies the requirement",
+                    regex_pattern=(
+                        r"ERROR: Could not find a version that satisfies "
+                        r"the requirement"
+                    ),
                     description="パッケージが見つからない",
                     severity="error",
                     language="python",
@@ -99,7 +104,9 @@ class PatternMatcher:
                     id="env_command_not_found",
                     name="Command Not Found",
                     category=PatternCategory.ENVIRONMENT,
-                    regex_pattern=r"command not found|No such file or directory",
+                    regex_pattern=(
+                        r"command not found|No such file or directory"
+                    ),
                     description="コマンドが見つからない",
                     severity="error",
                     language=None,
@@ -177,7 +184,9 @@ class PatternMatcher:
                     id="gui_qt_egl_missing",
                     name="Qt EGL Library Missing",
                     category=PatternCategory.ENVIRONMENT,
-                    regex_pattern=r"libEGL\.so\.1: cannot open shared object file",
+                    regex_pattern=(
+                        r"libEGL\.so\.1: cannot open shared object file"
+                    ),
                     description="Qtアプリケーションに必要なEGLライブラリが不足",
                     severity="error",
                     language="python",
@@ -213,7 +222,10 @@ class PatternMatcher:
                     id="codecov_upload_failed",
                     name="Codecov Upload Failed",
                     category=PatternCategory.NETWORK,
-                    regex_pattern=r"Failed to properly upload report.*codecov.*failed with exit code",
+                    regex_pattern=(
+                        r"Failed to properly upload report.*codecov.*"
+                        r"failed with exit code"
+                    ),
                     description="Codecovへのレポートアップロードに失敗",
                     severity="error",
                     language=None,
@@ -249,7 +261,10 @@ class PatternMatcher:
                     id="windows_path_issue",
                     name="Windows Path Issue",
                     category=PatternCategory.ENVIRONMENT,
-                    regex_pattern=r"path.*not found|The system cannot find the path specified",
+                    regex_pattern=(
+                        r"path.*not found|The system cannot find the path "
+                        r"specified"
+                    ),
                     description="Windows環境でのパス問題",
                     severity="error",
                     language=None,
@@ -259,7 +274,9 @@ class PatternMatcher:
                     id="macos_permission_issue",
                     name="macOS Permission Issue",
                     category=PatternCategory.PERMISSION,
-                    regex_pattern=r"Operation not permitted.*macOS|Security.*denied",
+                    regex_pattern=(
+                        r"Operation not permitted.*macOS|Security.*denied"
+                    ),
                     description="macOS環境での権限問題",
                     severity="error",
                     language=None,
@@ -269,7 +286,10 @@ class PatternMatcher:
                     id="linux_library_missing",
                     name="Linux Library Missing",
                     category=PatternCategory.ENVIRONMENT,
-                    regex_pattern=r"cannot open shared object file.*No such file or directory",
+                    regex_pattern=(
+                        r"cannot open shared object file.*No such file or "
+                        r"directory"
+                    ),
                     description="Linux環境でのライブラリ不足",
                     severity="error",
                     language=None,

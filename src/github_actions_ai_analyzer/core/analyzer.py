@@ -234,7 +234,9 @@ class GitHubActionsAnalyzer:
         # 基本的な解決策テンプレート
         if pattern.category == "dependency":
             return SolutionProposal(
-                solution_id=f"sol_{pattern.id}_{len(analysis.pattern_matches)}",
+                solution_id=(
+                    f"sol_{pattern.id}_{len(analysis.pattern_matches)}"
+                ),
                 title=f"{pattern.name}の解決",
                 description=f"{pattern.description}を解決するための手順",
                 steps=[

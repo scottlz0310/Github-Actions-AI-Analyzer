@@ -494,7 +494,7 @@ def main():
 
         # 最新のリリースワークフロー失敗ログを解析
         log_files = [
-            logs_dir / "latest_failure_fixed.log"
+            logs_dir / "latest_ci_failure.log"
         ]
 
         for log_file in log_files:

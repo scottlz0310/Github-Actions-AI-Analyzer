@@ -63,12 +63,16 @@ def main():
             print(f"  ID: {error.error_id}")
             print(f"  根本原因: {error.root_cause}")
             print(f"  重要度: {error.severity}")
-            print(
-                f"  影響ステップ: {', '.join(error.affected_steps) if error.affected_steps else 'なし'}"
+            affected_steps = (
+                ', '.join(error.affected_steps)
+                if error.affected_steps else 'なし'
             )
-            print(
-                f"  関連ファイル: {', '.join(error.related_files) if error.related_files else 'なし'}"
+            print(f"  影響ステップ: {affected_steps}")
+            related_files = (
+                ', '.join(error.related_files)
+                if error.related_files else 'なし'
             )
+            print(f"  関連ファイル: {related_files}")
 
         print(f"\n解決策提案数: {len(result.solution_proposals)}")
         for i, solution in enumerate(result.solution_proposals, 1):
