@@ -171,3 +171,8 @@ cython_debug/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Log files and directories
+test_logs/
+*.log
+logs/
