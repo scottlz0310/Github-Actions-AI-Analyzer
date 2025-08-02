@@ -32,7 +32,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
-          pip install black isort flake8 mypy bandit safety
+          pip install black isort flake8 mypy bandit safety types-PyYAML
 
       - name: Run Black (code formatting)
         run: |
@@ -51,7 +51,7 @@ jobs:
 
       - name: Run MyPy (type checking)
         run: |
-          mypy --install-types --non-interactive
+          pip install types-PyYAML
           mypy src/ --ignore-missing-imports --disallow-untyped-defs
           echo "✅ Type checking passed"
 
