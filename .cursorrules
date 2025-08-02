@@ -1,0 +1,116 @@
+# Cursor AI Rules for GitHub Actions AI Analyzer
+
+## プロジェクト概要
+このプロジェクトは、GitHub Actionsのエラーログを解析し、AIによる改善案生成と品質向上を支援するライブラリです。
+
+## コーディング規約
+- Python 3.8+を使用
+- 型ヒントを必ず使用する
+- docstringを日本語で記述
+- エラーハンドリングを適切に実装
+- テストカバレッジを維持する
+
+## バージョン更新時の必須チェックリスト
+
+### バージョン番号更新が必要なファイル
+バージョンを更新する際は、以下のファイルを必ず更新してください：
+
+1. **pyproject.toml** - プロジェクトのメインバージョン
+   ```toml
+   version = "X.X.X"
+   ```
+
+2. **docs/conf.py** - Sphinxドキュメントのバージョン
+   ```python
+   release = 'X.X.X'
+   ```
+
+3. **src/github_actions_ai_analyzer/cli/main.py** - CLIのバージョン表示
+   ```python
+   @click.version_option(version="X.X.X")
+   ```
+
+4. **src/github_actions_ai_analyzer/__init__.py** - パッケージのバージョン
+   ```python
+   __version__ = "X.X.X"
+   ```
+
+5. **README.md** - バッジとインストール例のバージョン
+   - バージョンバッジ: `version-X.X.X-blue.svg`
+   - インストール例: `pip install github-actions-ai-analyzer==X.X.X`
+
+6. **CHANGELOG.md** - 新しいリリース情報の追加
+   ```markdown
+   ## [X.X.X] - YYYY-MM-DD
+   
+   ### Added
+   - 新機能の説明
+   
+   ### Fixed
+   - 修正内容の説明
+   ```
+
+### バージョン更新手順
+1. バージョン更新スクリプトを使用: `python scripts/bump_version.py X.X.X`
+2. 変更をコミット: `git commit -m "chore: bump version to X.X.X"`
+3. タグを作成: `git tag -a vX.X.X -m "Release vX.X.X: description"`
+4. プッシュ: `git push && git push origin vX.X.X`
+
+## リリース前チェックリスト
+- [ ] すべてのテストが通る
+- [ ] コード品質チェック（Black、isort、Flake8、MyPy）が通る
+- [ ] ドキュメントが最新
+- [ ] CHANGELOG.mdが更新済み
+- [ ] バージョン番号がすべてのファイルで統一されている
+
+## ファイル構造
+```
+src/github_actions_ai_analyzer/
+├── cli/           # コマンドラインインターフェース
+├── core/          # コア機能
+├── types/         # 型定義
+└── utils/         # ユーティリティ
+
+.github/workflows/ # GitHub Actionsワークフロー
+docs/              # Sphinxドキュメント
+tests/             # テストファイル
+scripts/           # 開発用スクリプト
+```
+
+## 重要な注意事項
+- ワークフローファイル検証機能は`validate`コマンドで実装
+- AI品質向上システムは`tools/`ディレクトリに統合
+- セキュリティスキャンはCodeQL Action v3を使用
+- 型チェックには`types-PyYAML`が必要
+
+## 開発環境
+- Python 3.8+
+- 仮想環境の使用を推奨
+- pre-commitフックの設定
+- 開発用依存関係: `pip install -e ".[dev]"`
+
+## テスト実行
+```bash
+# 全テスト実行
+pytest tests/
+
+# カバレッジ付きテスト
+pytest tests/ --cov=src/ --cov-report=html
+
+# 特定のテスト
+pytest tests/test_analyzer.py -v
+```
+
+## ドキュメント生成
+```bash
+cd docs
+make html
+```
+
+## パッケージビルド
+```bash
+python -m build
+```
+
+## PyPI公開
+GitHub Actionsで自動的にPyPIに公開されます。 
