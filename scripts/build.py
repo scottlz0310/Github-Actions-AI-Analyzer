@@ -5,23 +5,24 @@
 PyPIパッケージのビルドとテストを行います。
 """
 
-import os
-import sys
-import subprocess
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 
 def run_command(command, description):
     """コマンドを実行"""
     print(f"🔄 {description}...")
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    
+    result = subprocess.run(
+        command, shell=True, capture_output=True, text=True
+    )
+
     if result.returncode != 0:
         print(f"❌ {description} に失敗しました:")
         print(result.stderr)
         return False
-    
+
     print(f"✅ {description} が完了しました")
     if result.stdout.strip():
         print(result.stdout)
@@ -31,17 +32,17 @@ def run_command(command, description):
 def clean_build():
     """ビルドディレクトリをクリーンアップ"""
     print("🧹 ビルドディレクトリをクリーンアップ...")
-    
-    dirs_to_clean = ['build', 'dist', '*.egg-info']
+
+    dirs_to_clean = ["build", "dist", "*.egg-info"]
     for pattern in dirs_to_clean:
-        for path in Path('.').glob(pattern):
+        for path in Path(".").glob(pattern):
             if path.is_dir():
                 shutil.rmtree(path)
                 print(f"  削除: {path}")
             elif path.is_file():
                 path.unlink()
                 print(f"  削除: {path}")
-    
+
     print("✅ クリーンアップが完了しました")
 
 
@@ -57,7 +58,7 @@ def run_linting():
         ("isort --check-only src/ tests/", "isort インポートチェック"),
         ("flake8 src/ tests/", "flake8 リンティング"),
     ]
-    
+
     for command, description in commands:
         if not run_command(command, description):
             return False
@@ -77,15 +78,21 @@ def build_package():
 def test_package():
     """ビルドされたパッケージをテスト"""
     # ソースディストリビューションをテスト
-    sdist_files = list(Path('dist').glob('*.tar.gz'))
+    sdist_files = list(Path("dist").glob("*.tar.gz"))
     if sdist_files:
-        return run_command(f"pip install {sdist_files[0]} --force-reinstall", "ソースディストリビューションのテスト")
-    
+        return run_command(
+            f"pip install {sdist_files[0]} --force-reinstall",
+            "ソースディストリビューションのテスト",
+        )
+
     # ホイールをテスト
-    wheel_files = list(Path('dist').glob('*.whl'))
+    wheel_files = list(Path("dist").glob("*.whl"))
     if wheel_files:
-        return run_command(f"pip install {wheel_files[0]} --force-reinstall", "ホイールのテスト")
-    
+        return run_command(
+            f"pip install {wheel_files[0]} --force-reinstall",
+            "ホイールのテスト",
+        )
+
     print("❌ ビルドファイルが見つかりません")
     return False
 
@@ -94,45 +101,47 @@ def main():
     """メイン関数"""
     print("🚀 GitHub Actions AI Analyzer ビルドスクリプト")
     print("=" * 50)
-    
+
     # 現在のディレクトリを確認
-    if not Path('pyproject.toml').exists():
-        print("❌ pyproject.toml が見つかりません。プロジェクトルートで実行してください。")
+    if not Path("pyproject.toml").exists():
+        print(
+            "❌ pyproject.toml が見つかりません。プロジェクトルートで実行してください。"
+        )
         sys.exit(1)
-    
+
     # クリーンアップ
     clean_build()
-    
+
     # テスト実行
     if not run_tests():
         print("❌ テストが失敗しました")
         sys.exit(1)
-    
+
     # リンティング
     if not run_linting():
         print("❌ リンティングが失敗しました")
         sys.exit(1)
-    
+
     # 型チェック
     if not run_type_checking():
         print("❌ 型チェックが失敗しました")
         sys.exit(1)
-    
+
     # パッケージビルド
     if not build_package():
         print("❌ パッケージビルドが失敗しました")
         sys.exit(1)
-    
+
     # パッケージテスト
     if not test_package():
         print("❌ パッケージテストが失敗しました")
         sys.exit(1)
-    
+
     print("\n🎉 すべてのビルドステップが完了しました！")
     print("\n📦 ビルドされたファイル:")
-    for file in Path('dist').glob('*'):
+    for file in Path("dist").glob("*"):
         print(f"  - {file}")
 
 
 if __name__ == "__main__":
-    main() 
+    main()
