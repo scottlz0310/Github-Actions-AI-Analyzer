@@ -18,7 +18,7 @@ console = Console()
 
 
 @click.group()
-@click.version_option(version = "0.1.6")
+@click.version_option(version="0.1.6")
 def main() -> None:
     """GitHub Actions AI Analyzer - エラーログ解析ツール"""
     pass
