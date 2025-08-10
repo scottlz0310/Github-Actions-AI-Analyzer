@@ -93,7 +93,7 @@ class GitHubActionsAnalyzer:
     def _read_log_file(self, log_file_path: str) -> str:
         """ログファイルを読み込み"""
         try:
-            with open(log_file_path, "r", encoding="utf-8") as f:
+            with open(log_file_path, encoding="utf-8") as f:
                 return f.read()
         except FileNotFoundError:
             raise FileNotFoundError(

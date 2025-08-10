@@ -88,4 +88,4 @@ Java
        print(f"重要度: {error.severity}")
        print(f"影響ステップ: {', '.join(error.affected_steps)}")
 
-詳細な使用方法については、:doc:`quickstart` を参照してください。 
+詳細な使用方法については、:doc:`quickstart` を参照してください。

@@ -65,7 +65,7 @@ class ContextCollector:
             return self._create_default_workflow_context()
 
         try:
-            with open(workflow_file_path, "r", encoding="utf-8") as f:
+            with open(workflow_file_path, encoding="utf-8") as f:
                 workflow_data = yaml.safe_load(f)
 
             return self._parse_workflow_yaml(workflow_data, workflow_file_path)
@@ -152,7 +152,7 @@ class ContextCollector:
         package_json = repo_path / "package.json"
         if package_json.exists():
             try:
-                with open(package_json, "r") as f:
+                with open(package_json) as f:
                     data = json.load(f)
                 deps = data.get("dependencies", {})
                 if "react" in deps:
@@ -204,7 +204,7 @@ class ContextCollector:
             requirements_file = repo_path / "requirements.txt"
             if requirements_file.exists():
                 try:
-                    with open(requirements_file, "r") as f:
+                    with open(requirements_file) as f:
                         deps = [
                             line.strip()
                             for line in f
@@ -219,7 +219,7 @@ class ContextCollector:
             package_json = repo_path / "package.json"
             if package_json.exists():
                 try:
-                    with open(package_json, "r") as f:
+                    with open(package_json) as f:
                         data = json.load(f)
                     dependencies["dependencies"] = data.get("dependencies", {})
                     dependencies["devDependencies"] = data.get(

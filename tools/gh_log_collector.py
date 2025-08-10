@@ -4,7 +4,7 @@ GitHub Actions ログ収集とAI解析の自動化スクリプト
 
 使用方法:
     python tools/gh_log_collector.py
-    
+
 機能:
 - gh run list でワークフロー実行一覧を取得
 - インタラクティブに実行を選択
@@ -18,22 +18,19 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
 
 class GitHubActionsLogCollector:
     def __init__(self):
         self.logs_dir = Path("logs")
         self.logs_dir.mkdir(exist_ok=True)
-        
+
     def check_gh_cli(self) -> bool:
         """GitHub CLI (gh) が利用可能かチェック"""
         try:
             result = subprocess.run(
-                ["gh", "--version"], 
-                capture_output=True, 
-                text=True, 
-                check=True
+                ["gh", "--version"], capture_output=True, text=True, check=True
             )
             print(f"✅ GitHub CLI 利用可能: {result.stdout.strip()}")
             return True
@@ -46,11 +43,18 @@ class GitHubActionsLogCollector:
         """ワークフロー実行一覧を取得"""
         try:
             result = subprocess.run(
-                ["gh", "run", "list", "--limit", str(limit), "--json", 
-                 "databaseId,displayTitle,status,conclusion,workflowName,createdAt"],
+                [
+                    "gh",
+                    "run",
+                    "list",
+                    "--limit",
+                    str(limit),
+                    "--json",
+                    "databaseId,displayTitle,status,conclusion,workflowName,createdAt",
+                ],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
             return json.loads(result.stdout)
         except subprocess.CalledProcessError as e:
@@ -61,18 +65,28 @@ class GitHubActionsLogCollector:
         """ワークフロー実行一覧を表示"""
         print("\n📋 GitHub Actions ワークフロー実行一覧:")
         print("-" * 80)
-        print(f"{'#':<3} {'ID':<10} {'ステータス':<10} {'ワークフロー':<25} {'作成日時':<20}")
+        print(
+            f"{'#':<3} {'ID':<10} {'ステータス':<10} {'ワークフロー':<25} {'作成日時':<20}"
+        )
         print("-" * 80)
-        
+
         for i, run in enumerate(runs, 1):
-            status_icon = self._get_status_icon(run["status"], run["conclusion"])
+            status_icon = self._get_status_icon(
+                run["status"], run["conclusion"]
+            )
             created_at = datetime.fromisoformat(
                 run["createdAt"].replace("Z", "+00:00")
             ).strftime("%m/%d %H:%M")
-            
-            workflow_name = run["workflowName"][:23] + "..." if len(run["workflowName"]) > 25 else run["workflowName"]
-            
-            print(f"{i:<3} {run['databaseId']:<10} {status_icon:<10} {workflow_name:<25} {created_at:<20}")
+
+            workflow_name = (
+                run["workflowName"][:23] + "..."
+                if len(run["workflowName"]) > 25
+                else run["workflowName"]
+            )
+
+            print(
+                f"{i:<3} {run['databaseId']:<10} {status_icon:<10} {workflow_name:<25} {created_at:<20}"
+            )
 
     def _get_status_icon(self, status: str, conclusion: Optional[str]) -> str:
         """ステータスアイコンを取得"""
@@ -94,10 +108,12 @@ class GitHubActionsLogCollector:
         """ユーザーにワークフロー実行を選択させる"""
         while True:
             try:
-                choice = input(f"\n選択してください (1-{len(runs)}, q=終了): ").strip()
-                if choice.lower() == 'q':
+                choice = input(
+                    f"\n選択してください (1-{len(runs)}, q=終了): "
+                ).strip()
+                if choice.lower() == "q":
                     return None
-                
+
                 index = int(choice) - 1
                 if 0 <= index < len(runs):
                     return runs[index]
@@ -112,30 +128,30 @@ class GitHubActionsLogCollector:
         workflow_name = run["workflowName"]
         status = run["status"]
         conclusion = run.get("conclusion", "unknown")
-        
+
         # ファイル名を生成（安全な文字のみ使用）
         safe_workflow_name = "".join(
-            c for c in workflow_name if c.isalnum() or c in ('-', '_', ' ')
-        ).replace(' ', '_')
-        
+            c for c in workflow_name if c.isalnum() or c in ("-", "_", " ")
+        ).replace(" ", "_")
+
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"{safe_workflow_name}_{run_id}_{status}_{conclusion}_{timestamp}.log"
         filepath = self.logs_dir / filename
-        
+
         print(f"\n📥 ログをダウンロード中: {run['displayTitle']}")
         print(f"💾 保存先: {filepath}")
-        
+
         try:
             result = subprocess.run(
                 ["gh", "run", "view", str(run_id), "--log"],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
-            
+
             # ログをファイルに保存
-            with open(filepath, 'w', encoding='utf-8') as f:
-                f.write(f"# GitHub Actions ワークフロー実行ログ\n")
+            with open(filepath, "w", encoding="utf-8") as f:
+                f.write("# GitHub Actions ワークフロー実行ログ\n")
                 f.write(f"# ワークフロー: {workflow_name}\n")
                 f.write(f"# 実行ID: {run_id}\n")
                 f.write(f"# ステータス: {status} ({conclusion})\n")
@@ -143,10 +159,10 @@ class GitHubActionsLogCollector:
                 f.write(f"# ダウンロード日時: {datetime.now().isoformat()}\n")
                 f.write("# " + "=" * 70 + "\n\n")
                 f.write(result.stdout)
-            
+
             print(f"✅ ログ保存完了: {filepath}")
             return str(filepath)
-            
+
         except subprocess.CalledProcessError as e:
             print(f"❌ ログダウンロードに失敗: {e}")
             return None
@@ -154,28 +170,28 @@ class GitHubActionsLogCollector:
     def run_ai_analysis(self, log_file: str) -> None:
         """AI解析ツールでログを解析"""
         print(f"\n🤖 AI解析を実行中: {log_file}")
-        
+
         # AI解析ツール（enhanced版）のパス
         analyzer_path = "tools/github_actions_ai_analyzer_enhanced.py"
-        
+
         if not os.path.exists(analyzer_path):
             print(f"❌ AI解析ツールが見つかりません: {analyzer_path}")
             return
-            
+
         try:
             # AI解析ツールを実行（ログファイルのみを解析）
             result = subprocess.run(
                 [sys.executable, analyzer_path, log_file],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
-            
+
             print("✅ AI解析完了")
             print("\n📊 解析結果:")
             print("-" * 50)
             print(result.stdout)
-            
+
         except subprocess.CalledProcessError as e:
             print(f"❌ AI解析に失敗: {e}")
             if e.stdout:
@@ -187,16 +203,16 @@ class GitHubActionsLogCollector:
         """メインのインタラクティブメニュー"""
         print("🚀 GitHub Actions ログ収集 & AI解析ツール")
         print("=" * 50)
-        
+
         while True:
             print("\n📋 メニュー:")
             print("1. ワークフロー実行一覧を表示してログ収集")
             print("2. 既存ログファイルをAI解析")
             print("3. logs/ ディレクトリの内容を表示")
             print("q. 終了")
-            
+
             choice = input("\n選択してください: ").strip()
-            
+
             if choice == "1":
                 self.collect_and_analyze_logs()
             elif choice == "2":
@@ -214,7 +230,9 @@ class GitHubActionsLogCollector:
         # ワークフロー実行数を選択
         while True:
             try:
-                limit = input("\n表示する実行数を入力 (デフォルト: 10): ").strip()
+                limit = input(
+                    "\n表示する実行数を入力 (デフォルト: 10): "
+                ).strip()
                 limit = int(limit) if limit else 10
                 if limit > 0:
                     break
@@ -244,7 +262,7 @@ class GitHubActionsLogCollector:
 
         # AI解析を実行するか確認
         analyze = input("\n🤖 AI解析を実行しますか? (y/N): ").strip().lower()
-        if analyze in ('y', 'yes'):
+        if analyze in ("y", "yes"):
             self.run_ai_analysis(log_file)
 
     def analyze_existing_logs(self) -> None:
@@ -261,15 +279,19 @@ class GitHubActionsLogCollector:
             modified_time = datetime.fromtimestamp(
                 log_file.stat().st_mtime
             ).strftime("%m/%d %H:%M")
-            print(f"{i:<3} {log_file.name:<40} {file_size:>8.1f}KB {modified_time}")
+            print(
+                f"{i:<3} {log_file.name:<40} {file_size:>8.1f}KB {modified_time}"
+            )
 
         # ファイルを選択
         while True:
             try:
-                choice = input(f"\n解析するファイルを選択 (1-{len(log_files)}, q=戻る): ").strip()
-                if choice.lower() == 'q':
+                choice = input(
+                    f"\n解析するファイルを選択 (1-{len(log_files)}, q=戻る): "
+                ).strip()
+                if choice.lower() == "q":
                     return
-                
+
                 index = int(choice) - 1
                 if 0 <= index < len(log_files):
                     selected_file = log_files[index]
@@ -291,20 +313,24 @@ class GitHubActionsLogCollector:
         print("-" * 80)
         print(f"{'ファイル名':<50} {'サイズ':<10} {'更新日時':<20}")
         print("-" * 80)
-        
-        for log_file in sorted(log_files, key=lambda x: x.stat().st_mtime, reverse=True):
+
+        for log_file in sorted(
+            log_files, key=lambda x: x.stat().st_mtime, reverse=True
+        ):
             if log_file.is_file():
                 file_size = log_file.stat().st_size / 1024  # KB
                 modified_time = datetime.fromtimestamp(
                     log_file.stat().st_mtime
                 ).strftime("%Y/%m/%d %H:%M")
-                print(f"{log_file.name:<50} {file_size:>8.1f}KB {modified_time:<20}")
+                print(
+                    f"{log_file.name:<50} {file_size:>8.1f}KB {modified_time:<20}"
+                )
 
     def run(self) -> None:
         """メインエントリーポイント"""
         if not self.check_gh_cli():
             return
-            
+
         self.interactive_menu()
 
 

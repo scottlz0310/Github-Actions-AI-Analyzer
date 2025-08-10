@@ -67,4 +67,4 @@ check-all: ## すべてのチェックを実行
 
 ci: ## CI/CDパイプライン用のチェック
 	make check-all
-	make build 
+	make build

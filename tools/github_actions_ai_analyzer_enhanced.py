@@ -16,7 +16,8 @@ from typing import Any, Dict, List, Optional
 
 # ログ設定
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger("enhanced_github_actions_ai_analyzer")
 
@@ -24,8 +25,8 @@ logger = logging.getLogger("enhanced_github_actions_ai_analyzer")
 class EnhancedGitHubActionsAnalyzer:
     """拡張されたGitHub Actions AI解析クラス"""
 
-    def __init__(self):
-        self.analysis_results = {}
+    def __init__(self) -> None:
+        self.analysis_results: Dict[str, Any] = {}
         self.patterns = {
             "error": r"ERROR|FAILED|FAILURE|exit code 1|Process completed with exit code 1",
             "warning": r"WARNING|WARN|warning",
@@ -58,7 +59,7 @@ class EnhancedGitHubActionsAnalyzer:
     def analyze_ci_report(self, report_path: Path) -> Dict[str, Any]:
         """CIレポートを解析"""
         try:
-            with open(report_path, "r", encoding="utf-8") as f:
+            with open(report_path, encoding="utf-8") as f:
                 report = json.load(f)
 
             analysis = {
@@ -101,7 +102,9 @@ class EnhancedGitHubActionsAnalyzer:
 
             # 品質スコアを計算
             if total_checks > 0:
-                analysis["quality_score"] = (passed_checks / total_checks) * 100
+                analysis["quality_score"] = (
+                    passed_checks / total_checks
+                ) * 100
 
             return analysis
 
@@ -112,10 +115,10 @@ class EnhancedGitHubActionsAnalyzer:
     def analyze_log_file(self, log_path: Path) -> Dict[str, Any]:
         """ログファイルを解析"""
         try:
-            with open(log_path, "r", encoding="utf-8") as f:
+            with open(log_path, encoding="utf-8") as f:
                 content = f.read()
 
-            analysis = {
+            analysis: Dict[str, Any] = {
                 "file": str(log_path),
                 "patterns_found": {},
                 "issues": [],
@@ -147,9 +150,9 @@ class EnhancedGitHubActionsAnalyzer:
                     {
                         "type": "windows_specific",
                         "description": "Windows固有の問題が検出されました",
-                        "count": analysis["patterns_found"]["windows_specific"][
-                            "count"
-                        ],
+                        "count": analysis["patterns_found"][
+                            "windows_specific"
+                        ]["count"],
                     }
                 )
 
@@ -158,13 +161,17 @@ class EnhancedGitHubActionsAnalyzer:
                     {
                         "type": "test_failure",
                         "description": "テスト失敗が検出されました",
-                        "count": analysis["patterns_found"]["test_failure"]["count"],
+                        "count": analysis["patterns_found"]["test_failure"][
+                            "count"
+                        ],
                     }
                 )
 
             # 品質メトリクスを計算
             total_lines = len(content.split("\n"))
-            error_count = analysis["patterns_found"].get("error", {}).get("count", 0)
+            error_count = (
+                analysis["patterns_found"].get("error", {}).get("count", 0)
+            )
             warning_count = (
                 analysis["patterns_found"].get("warning", {}).get("count", 0)
             )
@@ -173,9 +180,12 @@ class EnhancedGitHubActionsAnalyzer:
                 "error_frequency": error_count
                 / max(total_lines, 1)
                 * 1000,  # 1000行あたり
-                "warning_frequency": warning_count / max(total_lines, 1) * 1000,
+                "warning_frequency": warning_count
+                / max(total_lines, 1)
+                * 1000,
                 "total_issues": error_count + warning_count,
-                "issue_density": (error_count + warning_count) / max(total_lines, 1),
+                "issue_density": (error_count + warning_count)
+                / max(total_lines, 1),
             }
 
             # 改善提案を生成
@@ -220,79 +230,90 @@ class EnhancedGitHubActionsAnalyzer:
 
     def _generate_log_recommendations(self, patterns_found: Dict) -> List[str]:
         """ログパターンに基づく改善提案を生成"""
-        recommendations = []
+        recommendations: List[str] = []
 
+        self._add_error_recommendations(recommendations, patterns_found)
+        self._add_environment_recommendations(recommendations, patterns_found)
+        self._add_technical_recommendations(recommendations, patterns_found)
+        self._add_quality_recommendations(recommendations, patterns_found)
+
+        return recommendations
+
+    def _add_error_recommendations(
+        self, recommendations: List[str], patterns_found: Dict
+    ) -> None:
+        """エラー関連の改善提案を追加"""
         if patterns_found.get("error"):
             recommendations.append(
                 "エラーが多数検出されています。ログの詳細を確認し、根本原因を特定してください。"
             )
 
+    def _add_environment_recommendations(
+        self, recommendations: List[str], patterns_found: Dict
+    ) -> None:
+        """環境関連の改善提案を追加"""
         if patterns_found.get("windows_specific"):
             recommendations.append(
                 "Windows固有の問題が検出されています。Windows環境でのテスト設定を見直してください。"
             )
-
         if patterns_found.get("test_failure"):
             recommendations.append(
                 "テスト失敗が検出されています。テストケースとテスト環境を確認してください。"
             )
 
+    def _add_technical_recommendations(
+        self, recommendations: List[str], patterns_found: Dict
+    ) -> None:
+        """技術的な改善提案を追加"""
         if patterns_found.get("import_error"):
             recommendations.append(
                 "インポートエラーが検出されています。依存関係のインストールとパス設定を確認してください。"
             )
-
         if patterns_found.get("permission_error"):
             recommendations.append(
                 "権限エラーが検出されています。ファイル権限とアクセス設定を確認してください。"
             )
-
         if patterns_found.get("memory_error"):
             recommendations.append(
                 "メモリエラーが検出されています。メモリ使用量を最適化してください。"
             )
-
         if patterns_found.get("coverage_error"):
             recommendations.append(
                 "カバレッジエラーが検出されています。カバレッジ設定とファイル生成を確認してください。"
             )
-
         if patterns_found.get("qt_error"):
             recommendations.append(
                 "Qt関連のエラーが検出されています。Qt環境設定を確認してください。"
             )
-
         if patterns_found.get("dependency_error"):
             recommendations.append(
                 "依存関係エラーが検出されています。パッケージマネージャーの設定とバージョン互換性を確認してください。"
             )
-
         if patterns_found.get("build_error"):
             recommendations.append(
                 "ビルドエラーが検出されています。ビルド設定とコンパイラ設定を確認してください。"
             )
-
         if patterns_found.get("network_error"):
             recommendations.append(
                 "ネットワークエラーが検出されています。ネットワーク設定とプロキシ設定を確認してください。"
             )
-
         if patterns_found.get("security_error"):
             recommendations.append(
                 "セキュリティ問題が検出されています。セキュリティスキャンを実行し、脆弱性を修正してください。"
             )
 
+    def _add_quality_recommendations(
+        self, recommendations: List[str], patterns_found: Dict
+    ) -> None:
+        """品質関連の改善提案を追加"""
         if patterns_found.get("performance_issue"):
             recommendations.append(
                 "パフォーマンス問題が検出されています。コードの最適化とリソース使用量を確認してください。"
             )
-
         if patterns_found.get("quality_issue"):
             recommendations.append(
                 "コード品質問題が検出されています。リンティングとコードスタイルを確認してください。"
             )
-
-        return recommendations
 
     def analyze_multiple_reports(self, reports_dir: Path) -> Dict[str, Any]:
         """複数のレポートを解析"""
@@ -329,7 +350,9 @@ class EnhancedGitHubActionsAnalyzer:
                 status_counts[status] = status_counts.get(status, 0) + 1
 
                 all_issues.extend(report_analysis.get("issues", []))
-                all_recommendations.extend(report_analysis.get("recommendations", []))
+                all_recommendations.extend(
+                    report_analysis.get("recommendations", [])
+                )
 
                 quality_score = report_analysis.get("quality_score", 0.0)
                 quality_scores.append(quality_score)
@@ -369,17 +392,36 @@ class EnhancedGitHubActionsAnalyzer:
 
         return analysis
 
-    def generate_enhanced_report(self, analysis_results: Dict[str, Any]) -> str:
+    def generate_enhanced_report(
+        self, analysis_results: Dict[str, Any]
+    ) -> str:
         """拡張された解析結果をレポート形式で出力"""
         report = []
         report.append("# Enhanced GitHub Actions AI 解析レポート")
-        report.append(f"生成日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        report.append(
+            f"生成日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        )
         report.append("")
 
-        # 概要
+        self._add_enhanced_summary_section(report, analysis_results)
+        self._add_enhanced_quality_metrics_section(report, analysis_results)
+        self._add_enhanced_common_issues_section(report, analysis_results)
+        self._add_enhanced_recommendations_section(report, analysis_results)
+        self._add_enhanced_log_analysis_section(report, analysis_results)
+
+        return "\n".join(report)
+
+    def _add_enhanced_summary_section(
+        self, report: List[str], analysis_results: Dict[str, Any]
+    ) -> None:
+        """拡張概要セクションを追加"""
         report.append("## 📊 概要")
-        report.append(f"- 総レポート数: {analysis_results.get('total_reports', 0)}")
-        report.append(f"- 成功: {analysis_results.get('successful_reports', 0)}")
+        report.append(
+            f"- 総レポート数: {analysis_results.get('total_reports', 0)}"
+        )
+        report.append(
+            f"- 成功: {analysis_results.get('successful_reports', 0)}"
+        )
         report.append(f"- 警告: {analysis_results.get('warned_reports', 0)}")
         report.append(f"- 失敗: {analysis_results.get('failed_reports', 0)}")
         report.append(
@@ -387,39 +429,63 @@ class EnhancedGitHubActionsAnalyzer:
         )
         report.append("")
 
-        # 品質メトリクス
+    def _add_enhanced_quality_metrics_section(
+        self, report: List[str], analysis_results: Dict[str, Any]
+    ) -> None:
+        """拡張品質メトリクスセクションを追加"""
         if analysis_results.get("overall_quality_score", 0) > 0:
             report.append("## 🎯 品質メトリクス")
             quality_score = analysis_results.get("overall_quality_score", 0.0)
             if quality_score >= 90:
-                report.append(f"- **総合品質**: 🟢 優秀 ({quality_score:.1f}%)")
+                report.append(
+                    f"- **総合品質**: 🟢 優秀 ({quality_score:.1f}%)"
+                )
             elif quality_score >= 70:
-                report.append(f"- **総合品質**: 🟡 良好 ({quality_score:.1f}%)")
+                report.append(
+                    f"- **総合品質**: 🟡 良好 ({quality_score:.1f}%)"
+                )
             else:
-                report.append(f"- **総合品質**: 🔴 要改善 ({quality_score:.1f}%)")
+                report.append(
+                    f"- **総合品質**: 🔴 要改善 ({quality_score:.1f}%)"
+                )
             report.append("")
 
-        # 共通の問題
+    def _add_enhanced_common_issues_section(
+        self, report: List[str], analysis_results: Dict[str, Any]
+    ) -> None:
+        """拡張共通の問題セクションを追加"""
         if analysis_results.get("common_issues"):
             report.append("## 🚨 共通の問題")
             for issue in analysis_results["common_issues"]:
                 report.append(f"- **{issue['type']}**: {issue['count']}回発生")
             report.append("")
 
-        # 改善提案
+    def _add_enhanced_recommendations_section(
+        self, report: List[str], analysis_results: Dict[str, Any]
+    ) -> None:
+        """拡張改善提案セクションを追加"""
         if analysis_results.get("recommendations"):
             report.append("## 💡 改善提案")
-            for i, recommendation in enumerate(analysis_results["recommendations"], 1):
+            for i, recommendation in enumerate(
+                analysis_results["recommendations"], 1
+            ):
                 report.append(f"{i}. {recommendation}")
             report.append("")
 
-        # ログ解析結果
+    def _add_enhanced_log_analysis_section(
+        self, report: List[str], analysis_results: Dict[str, Any]
+    ) -> None:
+        """拡張ログ解析結果セクションを追加"""
         log_analysis_keys = [
-            key for key in analysis_results.keys() if key.startswith("log_analysis_")
+            key
+            for key in analysis_results.keys()
+            if key.startswith("log_analysis_")
         ]
         for log_key in log_analysis_keys:
             log_analysis = analysis_results[log_key]
-            log_name = log_key.replace("log_analysis_", "").replace("_", " ").title()
+            log_name = (
+                log_key.replace("log_analysis_", "").replace("_", " ").title()
+            )
             report.append(f"## 📋 {log_name}解析")
 
             if log_analysis.get("patterns_found"):
@@ -449,12 +515,16 @@ class EnhancedGitHubActionsAnalyzer:
                     f"- 警告頻度: {metrics.get('warning_frequency', 0):.2f} (1000行あたり)"
                 )
                 report.append(f"- 総問題数: {metrics.get('total_issues', 0)}")
-                report.append(f"- 問題密度: {metrics.get('issue_density', 0):.4f}")
+                report.append(
+                    f"- 問題密度: {metrics.get('issue_density', 0):.4f}"
+                )
                 report.append("")
 
             if log_analysis.get("recommendations"):
                 report.append("### ログ解析による改善提案")
-                for i, recommendation in enumerate(log_analysis["recommendations"], 1):
+                for i, recommendation in enumerate(
+                    log_analysis["recommendations"], 1
+                ):
                     report.append(f"{i}. {recommendation}")
                 report.append("")
 
@@ -465,7 +535,9 @@ class EnhancedGitHubActionsAnalyzer:
         report.append("1. **テスト品質向上**: 失敗したテストの自動修正提案")
         report.append("2. **依存関係最適化**: 古いパッケージの自動更新")
         report.append("3. **コード品質改善**: リンティングエラーの自動修正")
-        report.append("4. **パフォーマンス最適化**: ボトルネックの自動特定と修正")
+        report.append(
+            "4. **パフォーマンス最適化**: ボトルネックの自動特定と修正"
+        )
         report.append("5. **セキュリティ強化**: 脆弱性の自動検出と修正")
         report.append("")
 
@@ -483,7 +555,7 @@ def main():
         if not log_files:
             print("❌ 指定されたログファイルが見つかりません")
             sys.exit(1)
-        
+
         # ログファイルのみを解析
         analysis_results = {}
         for log_file in log_files:
@@ -508,15 +580,15 @@ def main():
             logger.info("ログファイルを解析中...")
 
             # 最新のリリースワークフロー失敗ログを解析
-            log_files = [
-                logs_dir / "latest_ci_failure.log"
-            ]
+            log_files = [logs_dir / "latest_ci_failure.log"]
 
             for log_file in log_files:
                 if log_file.exists():
                     logger.info(f"ログファイルを解析中: {log_file.name}")
                     log_analysis = analyzer.analyze_log_file(log_file)
-                    analysis_results[f"log_analysis_{log_file.stem}"] = log_analysis
+                    analysis_results[f"log_analysis_{log_file.stem}"] = (
+                        log_analysis
+                    )
 
     if not analysis_results:
         print("❌ 解析対象のファイルがありません")

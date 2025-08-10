@@ -14,12 +14,14 @@ Thank you for your interest in contributing to GitHub Actions AI Analyzer! This 
 
 1. Fork the repository
 2. Clone your fork:
+
    ```bash
    git clone https://github.com/your-username/Github-Actions-AI-Analyzer.git
    cd Github-Actions-AI-Analyzer
    ```
 
 3. Install the package in development mode:
+
    ```bash
    pip install -e ".[dev]"
    ```
@@ -41,6 +43,7 @@ We use the following tools to maintain code quality:
 - **mypy**: Type checking
 
 Run the formatters before committing:
+
 ```bash
 black src/ tests/
 isort src/ tests/
@@ -49,11 +52,13 @@ isort src/ tests/
 ### Testing
 
 Run the test suite:
+
 ```bash
 pytest
 ```
 
 Run tests with coverage:
+
 ```bash
 pytest --cov=src/github_actions_ai_analyzer
 ```
@@ -61,6 +66,7 @@ pytest --cov=src/github_actions_ai_analyzer
 ### Type Checking
 
 Run type checking:
+
 ```bash
 mypy src/
 ```
@@ -97,11 +103,13 @@ To add new CLI commands:
 ### Pull Request Process
 
 1. Create a feature branch from `main`:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
 2. Make your changes and commit them:
+
    ```bash
    git add .
    git commit -m "Add feature: description of changes"
@@ -114,6 +122,7 @@ To add new CLI commands:
 ### Commit Message Format
 
 Use conventional commit format:
+
 ```
 type(scope): description
 
@@ -123,6 +132,7 @@ type(scope): description
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -154,4 +164,4 @@ This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.
 
 ## License
 
-By contributing to this project, you agree that your contributions will be licensed under the MIT License. 
+By contributing to this project, you agree that your contributions will be licensed under the MIT License.

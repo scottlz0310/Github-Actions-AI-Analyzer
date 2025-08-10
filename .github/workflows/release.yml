@@ -3,7 +3,7 @@ name: Release Management
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 env:
   PYTHON_VERSION: "3.11"
@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
+          cache: "pip"
 
       - name: Install dependencies
         run: |
@@ -45,29 +45,29 @@ jobs:
           gh release create ${{ github.ref_name }} \
             --title "Release ${{ github.ref_name }}" \
             --notes "## 🚀 What's New in ${{ github.ref_name }}
-            
+
             ### ✨ Features
             - Enhanced CI/CD pipeline
             - Improved code quality checks
             - Comprehensive security scanning
             - Automated dependency management
             - AI品質向上システム統合
-            
+
             ### 🐛 Bug Fixes
             - Various improvements and optimizations
-            
+
             ### 📦 Installation
-            
+
             \`\`\`bash
             pip install github-actions-ai-analyzer==${{ github.ref_name }}
             \`\`\`
-            
+
             ### 📚 Documentation
-            
+
             For detailed documentation, visit our [GitHub repository](https://github.com/scottlz0310/Github-Actions-AI-Analyzer).
-            
+
             ### 🤝 Contributing
-            
+
             We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -95,7 +95,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
+          cache: "pip"
 
       - name: Install dependencies
         run: |
@@ -136,4 +136,4 @@ jobs:
           echo "PyPI publish result: ${{ needs.pypi-publish.result }}"
           echo "Please check the logs for details."
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

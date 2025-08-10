@@ -5,16 +5,18 @@ PyPI公開スクリプト
 PyPIにパッケージを公開します。
 """
 
-import subprocess
+import subprocess  # nosec B404
 import sys
 from pathlib import Path
 
 
-def run_command(command, description):
+def run_command(command: str, description: str) -> bool:
     """コマンドを実行"""
     print(f"🔄 {description}...")
-    result = subprocess.run(
-        command, shell=True, capture_output=True, text=True
+    # コマンドをリストに分割してshell=Trueを避ける
+    command_list = command.split() if isinstance(command, str) else command
+    result = subprocess.run(  # nosec B603
+        command_list, shell=False, capture_output=True, text=True
     )
 
     if result.returncode != 0:

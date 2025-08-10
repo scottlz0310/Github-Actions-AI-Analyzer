@@ -3,7 +3,7 @@
 - [ ] 1. Set up project structure and core interfaces
   - Create directory structure following the project organization (src/core/, src/cli/, tests/)
   - Define base data models and type definitions in src/types/
-  - Create __init__.py files for proper Python package structure
+  - Create **init**.py files for proper Python package structure
   - _Requirements: 3.1, 3.3_
 
 - [ ] 2. Implement core data models and validation

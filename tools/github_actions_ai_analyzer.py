@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-GitHub Actions AI Analyzer
+GitHub Actions AI Analyzer (Tools Version)
 
+このファイルはtoolsディレクトリにあり、メインのパッケージとは異なります。
 GitHub ActionsのログをAIで解析し、問題の特定と改善提案を行うツール
 """
 
@@ -15,7 +16,8 @@ from typing import Any, Dict, List, Optional
 
 # ログ設定
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger("github_actions_ai_analyzer")
 
@@ -42,7 +44,7 @@ class GitHubActionsAnalyzer:
     def analyze_ci_report(self, report_path: Path) -> Dict[str, Any]:
         """CIレポートを解析"""
         try:
-            with open(report_path, "r", encoding="utf-8") as f:
+            with open(report_path, encoding="utf-8") as f:
                 report = json.load(f)
 
             analysis = {
@@ -86,7 +88,7 @@ class GitHubActionsAnalyzer:
     def analyze_log_file(self, log_path: Path) -> Dict[str, Any]:
         """ログファイルを解析"""
         try:
-            with open(log_path, "r", encoding="utf-8") as f:
+            with open(log_path, encoding="utf-8") as f:
                 content = f.read()
 
             analysis = {
@@ -120,9 +122,9 @@ class GitHubActionsAnalyzer:
                     {
                         "type": "windows_specific",
                         "description": "Windows固有の問題が検出されました",
-                        "count": analysis["patterns_found"]["windows_specific"][
-                            "count"
-                        ],
+                        "count": analysis["patterns_found"][
+                            "windows_specific"
+                        ]["count"],
                     }
                 )
 
@@ -131,7 +133,9 @@ class GitHubActionsAnalyzer:
                     {
                         "type": "test_failure",
                         "description": "テスト失敗が検出されました",
-                        "count": analysis["patterns_found"]["test_failure"]["count"],
+                        "count": analysis["patterns_found"]["test_failure"][
+                            "count"
+                        ],
                     }
                 )
 
@@ -245,10 +249,14 @@ class GitHubActionsAnalyzer:
                 status_counts[status] = status_counts.get(status, 0) + 1
 
                 all_issues.extend(report_analysis.get("issues", []))
-                all_recommendations.extend(report_analysis.get("recommendations", []))
+                all_recommendations.extend(
+                    report_analysis.get("recommendations", [])
+                )
 
                 # 詳細なログ出力
-                logger.info(f"解析完了: {json_file.name} - ステータス: {status}")
+                logger.info(
+                    f"解析完了: {json_file.name} - ステータス: {status}"
+                )
                 if report_analysis.get("issues"):
                     logger.info(f"  問題: {len(report_analysis['issues'])}件")
 
@@ -278,32 +286,59 @@ class GitHubActionsAnalyzer:
         """解析結果をレポート形式で出力"""
         report = []
         report.append("# GitHub Actions AI 解析レポート")
-        report.append(f"生成日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        report.append(
+            f"生成日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        )
         report.append("")
 
-        # 概要
+        self._add_summary_section(report, analysis_results)
+        self._add_common_issues_section(report, analysis_results)
+        self._add_recommendations_section(report, analysis_results)
+        self._add_log_analysis_section(report, analysis_results)
+
+        return "\n".join(report)
+
+    def _add_summary_section(
+        self, report: List[str], analysis_results: Dict[str, Any]
+    ) -> None:
+        """概要セクションを追加"""
         report.append("## 📊 概要")
-        report.append(f"- 総レポート数: {analysis_results.get('total_reports', 0)}")
-        report.append(f"- 成功: {analysis_results.get('successful_reports', 0)}")
+        report.append(
+            f"- 総レポート数: {analysis_results.get('total_reports', 0)}"
+        )
+        report.append(
+            f"- 成功: {analysis_results.get('successful_reports', 0)}"
+        )
         report.append(f"- 警告: {analysis_results.get('warned_reports', 0)}")
         report.append(f"- 失敗: {analysis_results.get('failed_reports', 0)}")
         report.append("")
 
-        # 共通の問題
+    def _add_common_issues_section(
+        self, report: List[str], analysis_results: Dict[str, Any]
+    ) -> None:
+        """共通の問題セクションを追加"""
         if analysis_results.get("common_issues"):
             report.append("## 🚨 共通の問題")
             for issue in analysis_results["common_issues"]:
                 report.append(f"- **{issue['type']}**: {issue['count']}回発生")
             report.append("")
 
-        # 改善提案
+    def _add_recommendations_section(
+        self, report: List[str], analysis_results: Dict[str, Any]
+    ) -> None:
+        """改善提案セクションを追加"""
         if analysis_results.get("recommendations"):
             report.append("## 💡 改善提案")
-            for i, recommendation in enumerate(analysis_results["recommendations"], 1):
+            for i, recommendation in enumerate(
+                analysis_results["recommendations"], 1
+            ):
                 report.append(f"{i}. {recommendation}")
             report.append("")
 
-        # ログ解析結果
+    def _add_log_analysis_section(
+        self, report: List[str], analysis_results: Dict[str, Any]
+    ) -> None:
+        """ログ解析結果セクションを追加"""
         if analysis_results.get("log_analysis"):
             log_analysis = analysis_results["log_analysis"]
             report.append("## 📋 CIシミュレーションログ解析")
@@ -327,11 +362,11 @@ class GitHubActionsAnalyzer:
 
             if log_analysis.get("recommendations"):
                 report.append("### ログ解析による改善提案")
-                for i, recommendation in enumerate(log_analysis["recommendations"], 1):
+                for i, recommendation in enumerate(
+                    log_analysis["recommendations"], 1
+                ):
                     report.append(f"{i}. {recommendation}")
                 report.append("")
-
-        return "\n".join(report)
 
 
 def main():

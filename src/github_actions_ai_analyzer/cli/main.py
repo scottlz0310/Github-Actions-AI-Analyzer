@@ -168,7 +168,7 @@ def _check_best_practices(jobs: dict) -> list[str]:
 def _validate_workflow_file(workflow_file: str) -> dict | None:
     """ワークフローファイルを読み込み・検証"""
     try:
-        with open(workflow_file, "r", encoding="utf-8") as f:
+        with open(workflow_file, encoding="utf-8") as f:
             workflow_data = yaml.safe_load(f)
 
         if not isinstance(workflow_data, dict):

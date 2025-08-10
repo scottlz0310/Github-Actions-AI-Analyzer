@@ -136,17 +136,20 @@ github-actions-ai-analyzer/
 ## 主要ファイルの役割
 
 ### コア機能
+
 - **analyzer.py**: メインAPIとオーケストレーション
 - **log_processor.py**: ログのクリーニングとノイズ除去
 - **pattern_matcher.py**: エラーパターンの検出とマッチング
 - **ai_prompt_optimizer.py**: AI向けの最適化されたプロンプト生成
 
 ### 拡張性を考慮した設計
+
 - **languages/**: 言語固有のロジックを分離
 - **patterns/**: エラーパターンをカテゴリ別に整理
 - **data/**: 設定やテンプレートを外部ファイル化
 
 ### 使いやすさ
+
 - **cli/**: コマンドライン インターフェース
 - **examples/**: 実用的な使用例
 - **docs/**: 充実したドキュメント

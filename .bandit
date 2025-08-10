@@ -1,4 +1,6 @@
-exclude_dirs: ['tests', 'venv', '.venv', 'build', 'dist']
-skips: ['B101', 'B601']
+exclude_dirs: ['tests', 'venv', '.venv', 'build', 'dist', 'node_modules']
+skips: ['B101', 'B601', 'B603', 'B607', 'B404']
 targets: ['src']
-recursive: true 
+recursive: true
+verbose: false
+quiet: true

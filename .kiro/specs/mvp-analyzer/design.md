@@ -16,7 +16,7 @@ graph TD
     D --> E[AI Prompt Generator]
     E --> F[Output Formatter]
     F --> G[Results Output]
-    
+
     H[Pattern Database] --> C
     I[Template Engine] --> E
 ```
@@ -35,12 +35,14 @@ graph TD
 ### CLI Interface (`cli/main.py`)
 
 **Responsibilities:**
+
 - Parse command-line arguments
 - Validate input files and parameters
 - Orchestrate the analysis pipeline
 - Handle errors and display results
 
 **Interface:**
+
 ```python
 def main(log_file: str, output_format: str = "text", output_file: Optional[str] = None) -> int
 ```
@@ -48,11 +50,13 @@ def main(log_file: str, output_format: str = "text", output_file: Optional[str] 
 ### Log Parser (`core/log_parser.py`)
 
 **Responsibilities:**
+
 - Read and parse GitHub Actions log files
 - Remove timestamps, metadata noise, and irrelevant sections
 - Extract structured log entries with context
 
 **Interface:**
+
 ```python
 class LogParser:
     def parse(self, log_content: str) -> ParsedLog
@@ -62,11 +66,13 @@ class LogParser:
 ### Error Pattern Matcher (`core/pattern_matcher.py`)
 
 **Responsibilities:**
+
 - Match log sections against known error patterns
 - Classify errors by type and severity
 - Extract relevant error details and context
 
 **Interface:**
+
 ```python
 class PatternMatcher:
     def match_patterns(self, log_sections: List[LogSection]) -> List[DetectedError]
@@ -76,11 +82,13 @@ class PatternMatcher:
 ### Context Collector (`core/context_collector.py`)
 
 **Responsibilities:**
+
 - Gather workflow configuration details
 - Extract repository metadata when available
 - Collect environment and setup information
 
 **Interface:**
+
 ```python
 class ContextCollector:
     def collect_context(self, detected_errors: List[DetectedError]) -> AnalysisContext
@@ -89,11 +97,13 @@ class ContextCollector:
 ### AI Prompt Generator (`core/prompt_generator.py`)
 
 **Responsibilities:**
+
 - Generate structured AI prompts based on analysis results
 - Prioritize errors and format for optimal AI response
 - Include relevant context and specific questions
 
 **Interface:**
+
 ```python
 class PromptGenerator:
     def generate_prompt(self, context: AnalysisContext) -> AIPrompt
@@ -103,11 +113,13 @@ class PromptGenerator:
 ### Output Formatter (`core/output_formatter.py`)
 
 **Responsibilities:**
+
 - Format analysis results in requested format
 - Handle file output when specified
 - Provide human-readable and machine-readable formats
 
 **Interface:**
+
 ```python
 class OutputFormatter:
     def format_results(self, results: AnalysisResults, format_type: str) -> str

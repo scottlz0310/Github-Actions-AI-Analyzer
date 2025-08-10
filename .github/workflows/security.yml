@@ -2,13 +2,13 @@ name: Security Scan
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   schedule:
     # 毎週月曜日の午前9時に実行
-    - cron: '0 9 * * 1'
-  workflow_dispatch:  # 手動実行を有効化
+    - cron: "0 9 * * 1"
+  workflow_dispatch: # 手動実行を有効化
 
 jobs:
   codeql:
@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['python']
+        language: ["python"]
 
     steps:
       - name: Checkout repository
@@ -69,16 +69,16 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
   bandit:
     name: Bandit Security Scan
@@ -90,7 +90,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -119,7 +119,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -136,4 +136,4 @@ jobs:
         if: always()
         with:
           name: safety-report
-          path: safety-report.json 
+          path: safety-report.json

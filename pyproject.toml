@@ -16,10 +16,10 @@ maintainers = [
     {name = "Scott LZ", email = "scottlz0310@gmail.com"}
 ]
 keywords = [
-    "github-actions", 
-    "ci-cd", 
-    "error-analysis", 
-    "ai", 
+    "github-actions",
+    "ci-cd",
+    "error-analysis",
+    "ai",
     "automation",
     "logging",
     "debugging",
@@ -154,4 +154,4 @@ addopts = [
     "--cov=src/github_actions_ai_analyzer",
     "--cov-report=term-missing",
     "--cov-report=html",
-] 
+]

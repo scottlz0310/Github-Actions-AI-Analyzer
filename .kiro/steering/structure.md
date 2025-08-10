@@ -3,6 +3,7 @@
 ## Directory Organization
 
 ### Core Source Code (`src/`)
+
 - **`core/`**: Main analysis engine components
   - `analyzer.py`: Primary orchestration and API
   - `log_processor.py`: Log cleaning and preprocessing
@@ -36,35 +37,42 @@
 - **`utils/`**: Common utilities (file ops, string processing, logging)
 
 ### Data & Configuration (`data/`)
+
 - **`error-database/`**: Known error patterns and solutions
 - **`templates/`**: Output templates for reports and AI prompts
 
 ### Testing (`tests/`)
+
 - **`unit/`**: Component-level tests mirroring `src/` structure
 - **`integration/`**: End-to-end workflow tests
 - **`fixtures/`**: Test data (sample logs, workflows, repositories)
 
 ### Documentation (`docs/`)
+
 - **`api/`**: API reference documentation
 - **`guides/`**: User guides and tutorials
 - **`patterns/`**: Pattern definition documentation
 
 ### Scripts (`scripts/`)
+
 - Build, test, and maintenance automation scripts
 
 ## File Naming Conventions
+
 - Python files: `snake_case.py`
 - TypeScript files: `camelCase.ts` or `kebab-case.ts`
 - Configuration files: Standard names (`pyproject.toml`, `package.json`)
 - Test files: `*.test.py` or `*.test.ts`
 
 ## Module Organization
+
 - Each major component has its own directory with `__init__.py`
 - Language-specific modules follow consistent structure
 - Utilities are shared across components
 - Types are centrally defined and exported
 
 ## Configuration Files
+
 - **Root level**: `pyproject.toml`, `package.json`, `tsconfig.json`
 - **Quality tools**: `.eslintrc.js`, `.prettierrc`, `jest.config.js`
 - **Project docs**: `README.md`, `CHANGELOG.md`

@@ -63,16 +63,19 @@ GitHub Actionsのワークフロー実行で発生するエラーログは、大
 ## 🛠️ 対応言語・フレームワーク
 
 ### Python
+
 - **パッケージマネージャー**: pip, poetry, venv
 - **フレームワーク**: Django, Flask, FastAPI
 - **エラーパターン**: ModuleNotFoundError, ImportError, pip install failures
 
 ### JavaScript/Node.js
+
 - **パッケージマネージャー**: npm, yarn, pnpm
 - **フレームワーク**: React, Vue, Next.js, Express
 - **エラーパターン**: npm install failures, module resolution errors
 
 ### Java
+
 - **ビルドツール**: Maven, Gradle
 - **フレームワーク**: Spring Boot, Jakarta EE
 - **エラーパターン**: Compilation errors, dependency conflicts
@@ -93,6 +96,7 @@ pip install github-actions-ai-analyzer[ai-quality]
 ## 🔧 開発環境のセットアップ
 
 ### 前提条件
+
 - Python 3.8+
 - Git
 - Make（オプション）
@@ -215,6 +219,7 @@ gh-actions-analyzer --help
 ### ワークフローファイル検証機能
 
 **検証項目**:
+
 - ✅ YAML構文の妥当性
 - ✅ 必須フィールド（name、on、jobs）の存在
 - ✅ ジョブ名の重複チェック
@@ -222,6 +227,7 @@ gh-actions-analyzer --help
 - ⚠️ ベストプラクティス（タイムアウト設定、権限設定）
 
 **検証結果例**:
+
 ```
 ワークフローファイル検証結果
 ┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -316,25 +322,30 @@ python examples/basic_usage.py
 ## 📋 エラーパターン
 
 ### 依存関係エラー
+
 - パッケージの不整合
 - バージョン競合
 - インストール失敗
 
 ### 権限エラー
+
 - ファイルアクセス権限
 - 実行権限の問題
 
 ### 環境エラー
+
 - コマンド不足
 - PATH設定の問題
 - バージョン不一致
 
 ### ネットワークエラー
+
 - タイムアウト
 - 接続エラー
 - DNS解決失敗
 
 ### 構文エラー
+
 - YAML構文エラー
 - JSON構文エラー
 - スクリプト構文エラー
@@ -377,6 +388,7 @@ python examples/basic_usage.py
 ### 🏗️ パイプライン構成
 
 #### コード品質チェック
+
 - **Black**: コードフォーマット
 - **isort**: インポート文の整理
 - **Flake8**: リンティング
@@ -384,6 +396,7 @@ python examples/basic_usage.py
 - **Pre-commit**: コミット前チェック
 
 #### テスト実行
+
 - **Unit Tests**: 単体テスト（pytest）
 - **Integration Tests**: 統合テスト
 - **Coverage**: テストカバレッジ（80%以上要求）
@@ -391,6 +404,7 @@ python examples/basic_usage.py
 - **Multi-version**: Python 3.8-3.12
 
 #### セキュリティスキャン
+
 - **CodeQL**: GitHubの静的解析
 - **Bandit**: Pythonセキュリティスキャン
 - **Safety**: 依存関係の脆弱性チェック
@@ -398,6 +412,7 @@ python examples/basic_usage.py
 - **Dependency Review**: 依存関係の変更レビュー
 
 #### 自動化
+
 - **Dependabot**: 依存関係の自動更新
 - **Release Management**: 自動リリース作成
 - **PyPI Deployment**: 自動パッケージ公開
@@ -406,24 +421,28 @@ python examples/basic_usage.py
 ### 📊 品質メトリクス
 
 #### 現在のバージョン
+
 - **Version**: 0.1.4
 - **Release Date**: 2024-08-02
 - **Python Support**: 3.8+
 
 #### テストカバレッジ
+
 - **Overall Coverage**: 80%+（目標）
-- **Core Modules**: 
+- **Core Modules**:
   - PatternMatcher: 100%
   - ContextCollector: 92%
   - Analyzer: 84%
   - LogProcessor: 67%
 
 #### セキュリティ
+
 - **Vulnerabilities**: 0（目標）
 - **Security Score**: A+（目標）
 - **Dependency Updates**: 自動化済み
 
 ### 🚀 対応状況
+
 - ✅ 基本的なログ解析機能
 - ✅ エラーパターンマッチング
 - ✅ CLIインターフェース
@@ -437,4 +456,4 @@ python examples/basic_usage.py
 
 ---
 
-⭐ このプロジェクトが役に立ったら、スターを付けてください！ 
+⭐ このプロジェクトが役に立ったら、スターを付けてください！

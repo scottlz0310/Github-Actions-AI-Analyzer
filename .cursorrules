@@ -42,10 +42,10 @@
 6. **CHANGELOG.md** - 新しいリリース情報の追加
    ```markdown
    ## [X.X.X] - YYYY-MM-DD
-   
+
    ### Added
    - 新機能の説明
-   
+
    ### Fixed
    - 修正内容の説明
    ```
@@ -113,4 +113,4 @@ python -m build
 ```
 
 ## PyPI公開
-GitHub Actionsで自動的にPyPIに公開されます。 
+GitHub Actionsで自動的にPyPIに公開されます。

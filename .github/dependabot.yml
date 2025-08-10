@@ -61,4 +61,4 @@ updates:
       include: "scope"
     labels:
       - "dependencies"
-      - "pre-commit" 
+      - "pre-commit"
