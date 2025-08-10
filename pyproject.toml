@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "github-actions-ai-analyzer"
-version = "0.1.6"
+version = "0.1.7"
 description = "GitHub Actionsのエラーログを解析し、AIによる改善案生成と品質向上を支援するライブラリ"
 readme = "README.md"
 requires-python = ">=3.8"

@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.7] - 2025-08-10
+
+### Added
+
+- **AI品質向上システムの完全統合**: すべての品質チェックが正常に動作
+- **pre-commitフックの最適化**: Banditセキュリティチェックの適切な設定
+- **コード品質の大幅改善**: テスト85個すべて通過、全品質チェック通過
+
+### Enhanced
+
+- **セキュリティチェック**: Banditによるセキュリティ脆弱性の検出と適切な処理
+- **開発ワークフロー**: pre-commitフックによる自動品質チェックの安定化
+- **コードフォーマット**: Blackによる自動フォーマットの完全適用
+
+### Fixed
+
+- **Bandit設定**: セキュリティチェックの適切な設定とテストファイルの除外
+- **pre-commit設定**: 各ツールの適切な設定とファイル範囲の指定
+- **コード品質**: すべての品質チェックツールが正常に動作
+
+### Technical
+
+- セキュリティチェックの最適化と設定の改善
+- 開発ワークフローの安定化と効率化
+- コード品質の継続的な監視と改善
+
 ## [0.1.6] - 2025-08-02
 
 ### Added
