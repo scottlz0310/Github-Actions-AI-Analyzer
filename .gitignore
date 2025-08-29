@@ -178,4 +178,7 @@ test_logs/
 logs/
 
 # AI analysis reports
-reports/
+# 中身だけ除外
+report/*
+# フォルダ自体は除外しない
+!report/.gitkeep
