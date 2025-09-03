@@ -182,3 +182,14 @@ logs/
 report/*
 # フォルダ自体は除外しない
 !report/.gitkeep
+# Added by add-autogen-gitignore.ps1 on 2025-09-03T15:56:24.9034225+09:00
+.venv/
+*.pyo
+*.pyd
+*.whl
+.env.*
+.vscode.bak.*
+uv.lock
+*.sqlite3
+*.db
+node_modules/
