@@ -193,3 +193,12 @@ uv.lock
 *.sqlite3
 *.db
 node_modules/
+
+# Auto-generated entries
+*.pyc
+.ruff_cache/
+
+# Auto-generated entries
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
