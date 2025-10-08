@@ -14,7 +14,7 @@
 - `validate` コマンドでは `_check_timeout_settings` や `_check_permissions` など固有のベストプラクティス判定があり、非推奨アクションはリスト上位3件まで報告します。
 - `tools/github_actions_ai_analyzer_enhanced.py` はCIレポート解析と品質メトリクス計算をまとめたスクリプトです。CLI本体とロジックが別系統で維持されている点を踏まえて、共通化する際は重複パターン対応を意識してください。
 ## テストと品質
-- 依存関係は `uv sync --dev` で同期します。任意のPythonスクリプトやCLIは `uv run <cmd>` で実行し、環境差異を避けます。
+- 依存関係は `uv sync --all-groups` で同期します。任意のPythonスクリプトやCLIは `uv run <cmd>` で実行し、環境差異を避けます。
 - 単体テスト: `uv run pytest`。カバレッジ付きは `uv run pytest --cov=src/github_actions_ai_analyzer --cov-report=term-missing --cov-report=html`。`pyproject.toml` の `[tool.pytest.ini_options]` で常にカバレッジと `--strict-config` が有効です。
 - リント/フォーマット: `uv run ruff check src tests examples` と `uv run ruff format src tests examples`。既存ルールは `ruff.toml`（未作成の場合は追加）に集約します。
 - 型チェック: `uv run mypy src`。mypyはstrict設定であり、新規モジュールにも型注釈と日本語Docstringを揃えます。
