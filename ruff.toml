@@ -3,7 +3,7 @@ select = ["E", "W", "F", "I", "N", "UP", "B", "C4", "SIM", "RUF"]
 ignore = ["E501"]
 
 [format]
-line-length = 79
+line-length = 120
 target-version = "py312"
 
 [lint.isort]
