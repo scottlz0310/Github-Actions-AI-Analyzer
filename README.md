@@ -1,15 +1,28 @@
-# GitHub Actions AI Analyzer
+# 🗄️ GitHub Actions AI Analyzer [ARCHIVED]
 
+[![Archived](https://img.shields.io/badge/Status-Archived-red.svg)](https://github.com/scottlz0310/Github-Actions-AI-Analyzer)
 [![PyPI version](https://badge.fury.io/py/github-actions-ai-analyzer.svg)](https://badge.fury.io/py/github-actions-ai-analyzer)
 [![Version](https://img.shields.io/badge/version-0.1.7-blue.svg)](https://github.com/scottlz0310/Github-Actions-AI-Analyzer/releases/tag/v0.1.7)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![AI Quality](https://img.shields.io/badge/AI%20Quality-Enhanced-brightgreen.svg)](https://github.com/scottlz0310/Github-Actions-AI-Analyzer)
+
+> ⚠️ **このプロジェクトはArchive化されました**  
+> 機能は [Mcp-Docker](https://github.com/scottlz0310/Mcp-Docker) リポジトリの **Actionsシミュレータ** で代替されています。
 
 GitHub Actionsのエラーログを解析し、AIによる改善案生成を支援するライブラリ・ツールです。
 
-## 🤖 AI品質向上システム統合
+## 🗄️ Archive化のお知らせ
+
+このプロジェクトは **Mcp-Docker** リポジトリの **Actionsシミュレータ** で機能が代替可能となったため、Archive化いたしました。
+
+### 🔄 代替サービス
+- **リポジトリ**: [Mcp-Docker](https://github.com/scottlz0310/Mcp-Docker)
+- **サービス**: Actionsシミュレータ
+- **機能**: GitHub Actionsのエラーログ解析とAI改善案生成
+
+---
+
+## 🤖 AI品質向上システム統合 [参考]
 
 このリポジトリには、PhotoGeoViewプロジェクトで開発された**AI品質向上システム**が統合されています。自動的なテスト品質向上と継続的な改善を支援します。
 
@@ -350,19 +363,14 @@ python examples/basic_usage.py
 - JSON構文エラー
 - スクリプト構文エラー
 
-## 🤝 貢献
+## 🗄️ Archive化について
 
-プルリクエストやイシューの報告を歓迎します！
+このプロジェクトはArchive化され、読み取り専用となりました。
 
-### 貢献の流れ
-
-1. このリポジトリをフォーク
-2. 機能ブランチを作成 (`git checkout -b feature/amazing-feature`)
-3. 変更をコミット (`git commit -m 'Add amazing feature'`)
-4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
-5. プルリクエストを作成
-
-詳しくは[CONTRIBUTING.md](CONTRIBUTING.md)をご覧ください。
+### 今後の対応
+- 新しい機能開発や改善は [Mcp-Docker](https://github.com/scottlz0310/Mcp-Docker) リポジトリのActionsシミュレータで継続されます
+- このリポジトリのコードは参考資料として保持されます
+- 新しいIssueやPRは受け付けていません
 
 ## 📄 ライセンス
 
@@ -375,11 +383,11 @@ python examples/basic_usage.py
 - [Click](https://click.palletsprojects.com/) - CLIフレームワーク
 - [Rich](https://rich.readthedocs.io/) - ターミナル出力
 
-## 📞 サポート
+## 📞 サポート [参考]
 
-- **Issues**: [GitHub Issues](https://github.com/scottlz0310/Github-Actions-AI-Analyzer/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/scottlz0310/Github-Actions-AI-Analyzer/discussions)
-- **Email**: scottlz0310@gmail.com
+> ⚠️ **Archive化により、このプロジェクトのサポートは終了しています**
+
+新しいサポートは [Mcp-Docker](https://github.com/scottlz0310/Mcp-Docker) リポジトリで提供されます。
 
 ## 🔄 CI/CDパイプライン
 
